@@ -1,6 +1,9 @@
 # SolarSystem
 A model of the solar system.
 
+## Live preview
+https://lclpyt.github.io/SolarSystem/
+
 ## Building
 First, you need to install the project dependencies.<br>
 To do so, type `npm install`.<br>
