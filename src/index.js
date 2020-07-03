@@ -3,7 +3,7 @@ import './style.css';
 import * as THREE from 'three';
 
 let scene, camera, renderer;
-let geometry, material, cube;
+let cube;
 
 init();
 animate();
@@ -17,14 +17,16 @@ function init() {
 
   // Die Kamera repräsentiert den Blick des Zuschauers.
   camera = new THREE.PerspectiveCamera(
-    75, // field of view      - Blickwinkel
-    window.innerWidth / window.innerHeight, // aspect ratio       - Seitenverhältnis, das für Skalierungen usw. benutzt wird.
+    75, // field of view - Blickwinkel
+    window.innerWidth / window.innerHeight, // aspect ratio - Seitenverhältnis, das für Skalierungen usw. benutzt wird.
     0.1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
-    1000 // far clipping pane  - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
+    1000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
   );
 
   // Der Renderer ist für das Darstellen der Objekte auf dem Bildschirm zuständig.
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({
+    antialias: true // Kantenglättung
+  });
   // Setzen der Auflösung. Hier wird sie der des Bildschirms angepasst.
   renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -34,16 +36,26 @@ function init() {
   /** Darstellung eines Würfels **/
 
   // Definieren eines Geometrieobjektes, welches alle Eckpunkte, sowie Flächen dieser speichert. BoxGeometry ist in dem Fall die Geometrie für einen Würfel.
-  geometry = new THREE.BoxGeometry();
+  let cubeGeometry = new THREE.BoxGeometry();
   // Definieren eines Materials, welches für das Objekt benutzt wird. Dieses Material sorgt für die Farbe des dargestellten Objektes. In diesem Fall sorgt dieses Material dafür, dass der Würfel grün dargestellt wird.
-  material = new THREE.MeshBasicMaterial({
+  let cubeMaterial = new THREE.MeshLambertMaterial({
     color: 0x00ff00
   });
   // Definieren eines Meshes. Dieses Objekt speichert eine Geometrie und ein dazugehöriges Material. Dieses Objekt repräsentiert im Moment einen grünen Würfel.
-  cube = new THREE.Mesh(geometry, material);
+  cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
   // Hinzufügen des Würfels zur Szene.
   scene.add(cube);
+
+  // Hinzufügen von Lichtquellen
+  // Ambient Light kommt von überall, es ist sozusagen ein Minimumlichtwert.
+  let ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+  scene.add(ambientLight);
+
+  // Point Light kommt von einem bestimmten Punkt. Dies ist realitätsnah und z.B. wie eine Lampe vorzustellen.
+  let pointLight = new THREE.PointLight(0xffffff, 0.5);
+  pointLight.position.z += 10;
+  scene.add(pointLight);
 
   // Der Würfel ist im Moment im Koordinatenursprung, genauso, wie die Kamera. Deswegen würde man den Würfel nicht sehen. Mit dieser Anweisung wird die Position der Kamera auf der z-Achse um 5 Einheiten bewegt, damit man den Würfel sehen kann.
   camera.position.z = 5;
