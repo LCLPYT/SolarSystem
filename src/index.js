@@ -6,12 +6,16 @@ import * as THREE from 'three';
 
 // Die drei Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
 let scene, camera, renderer;
+// Die Blickrichtung als Vektor
+let view = new THREE.Vector3();
+// Bewegungsrichtungs-Vektor
+let movement = new THREE.Vector3();
 // Objekte der Szene, die außerhalb von init() noch gebraucht werden.
 let sun;
 // Ein Feld, welches die Nummern der gerade gedrückten Tasten enthält.
 let pressedKeys = [];
 // Bewegungsgeschwindigkeit der Kamera
-const movement = 0.02;
+const movementSpeed = 0.02;
 // Nummern bestimmter Tasten
 const MOVE_FORWARDS = 87, // 'w'
       MOVE_BACKWARDS = 83, // 's'
@@ -23,6 +27,9 @@ const MOVE_FORWARDS = 87, // 'w'
       LOOK_DOWN = 40, // 'arrow_down'
       LOOK_LEFT = 37, // 'arrow_left',
       LOOK_RIGHT = 39; // 'arrow_right'
+
+// Achsen-Vektoren
+const AXIS_Y = new THREE.Vector3(0, 1, 0);
 
 /* - */
 
@@ -70,6 +77,9 @@ function init() {
 
   // Die Kamera aus dem Koordinatenursprung bewegen, da sie sonst in der Sonne stecken würde.
   camera.position.z = 5;
+
+  // Die Blickrichtung initalisieren
+  updateViewDirection();
 }
 
 function addSun() {
@@ -126,22 +136,40 @@ function animate() {
   requestAnimationFrame(animate); // Diese Anweisung sorgt dafür, dass die Funktion wiederholt aufgerufen wird. Dabei wird auch eine bestimmte Zeit gewartet um der Wiederholfrequenz des Bildschirms gerecht zu werden.
 
   // Bewegungslogik der Kamera
-  // TODO: Bewegung aufgrund der Blickrichtung ausrichten
-  // z-Achse
-  if (isKeyDown(MOVE_FORWARDS) && !isKeyDown(MOVE_BACKWARDS)) camera.position.z -= movement;
-  else if (isKeyDown(MOVE_BACKWARDS) && !isKeyDown(MOVE_FORWARDS)) camera.position.z += movement;
-  // x-Achse
-  if (isKeyDown(MOVE_LEFT) && !isKeyDown(MOVE_RIGHT)) camera.position.x -= movement;
-  else if (isKeyDown(MOVE_RIGHT) && !isKeyDown(MOVE_LEFT)) camera.position.x += movement;
-  // y-Achse
-  if (isKeyDown(MOVE_UP) && !isKeyDown(MOVE_DOWN)) camera.position.y += movement;
-  else if (isKeyDown(MOVE_DOWN) && !isKeyDown(MOVE_UP)) camera.position.y -= movement;
-  // x-Rotation
-  if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) camera.rotation.x += movement;
-  else if (isKeyDown(LOOK_DOWN) && !isKeyDown(LOOK_UP)) camera.rotation.x -= movement;
-  // y-Rotation
-  if (isKeyDown(LOOK_LEFT) && !isKeyDown(LOOK_RIGHT)) camera.rotation.y += movement;
-  else if (isKeyDown(LOOK_RIGHT) && !isKeyDown(LOOK_LEFT)) camera.rotation.y -= movement;
+  movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
+
+  // Vor / Zurück
+  if (isKeyDown(MOVE_FORWARDS) && !isKeyDown(MOVE_BACKWARDS)) movement.add(view); // Die Blickrichtung entspricht der Richtung vorwärts und ist auch schon skaliert, daher kann der Vektor einfach addiert werden.
+  else if (isKeyDown(MOVE_BACKWARDS) && !isKeyDown(MOVE_FORWARDS)) movement.sub(view); // Wie in der Zeile darüber, nur wird der Vektor dieses mal subtrahiert und nicht addiert.
+  // Links / Rechts
+  if (isKeyDown(MOVE_LEFT) && !isKeyDown(MOVE_RIGHT)) movement.add(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // Gleiches Prinzip, wie für Vor / Zurück, nur dass der Bewegungsrichtungsvektor 90° an der y-Achse rotiert ist.
+  else if (isKeyDown(MOVE_RIGHT) && !isKeyDown(MOVE_LEFT)) movement.sub(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // **
+  // Oben / Unten
+  if (isKeyDown(MOVE_UP) && !isKeyDown(MOVE_DOWN)) movement.setComponent(1, movementSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
+  else if (isKeyDown(MOVE_DOWN) && !isKeyDown(MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
+  camera.position.add(movement); // Die Bewegung mithilfe von Vektoraddition auf die position addieren.
+
+  // Rotationslogik der Kamera
+  let rotated = false; // In dieser Variable wird gespeichert, ob in dieser Iteration die Kamera rotiert wurde.
+  // nach Oben / Unten sehen
+  if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) {
+    camera.rotation.x += movementSpeed;
+    rotated = true;
+  }
+  else if (isKeyDown(LOOK_DOWN) && !isKeyDown(LOOK_UP)) {
+    camera.rotation.x -= movementSpeed;
+    rotated = true;
+  }
+  // Nach Links / Rechts sehen
+  if (isKeyDown(LOOK_LEFT) && !isKeyDown(LOOK_RIGHT)) {
+    camera.rotation.y += movementSpeed;
+    rotated = true;
+  }
+  else if (isKeyDown(LOOK_RIGHT) && !isKeyDown(LOOK_LEFT)) {
+    camera.rotation.y -= movementSpeed;
+    rotated = true;
+  }
+  if (rotated) updateViewDirection(); // Wenn eine Rotation stattgefunden hat, den Vektor der Bewegungsrichtung aktualisieren.
 
   // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
   renderer.render(scene, camera);
@@ -155,4 +183,13 @@ function animate() {
  */
 function isKeyDown(keyCode) {
   return pressedKeys.includes(keyCode);
+}
+
+/**
+ * Diese Funktion aktualisiert den Blickrichtungs-Vektor.
+ * Sie sollte aufgerufen werden, sobald die Rotation der Kamera verändert wird.
+ */
+function updateViewDirection() {
+  camera.getWorldDirection(view); // Berechnet die Blickrichtung der Kamera und speichert sie in 'view'.
+  view.multiplyScalar(movementSpeed); // Bewegungsrichtung aus Performancegründen direkt hier skalieren.
 }
