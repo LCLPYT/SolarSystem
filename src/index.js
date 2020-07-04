@@ -154,10 +154,12 @@ function animate() {
   // nach Oben / Unten sehen
   if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) {
     camera.rotation.x += movementSpeed;
+    if (camera.rotation.x > Math.PI / 2) camera.rotation.x = Math.PI / 2; // Durch diese Beschränkung kann man Maximal 90° nach oben schauen und sich nicht "überschlagen"
     rotated = true;
   }
   else if (isKeyDown(LOOK_DOWN) && !isKeyDown(LOOK_UP)) {
     camera.rotation.x -= movementSpeed;
+    if (camera.rotation.x < -Math.PI / 2) camera.rotation.x = -Math.PI / 2; // Durch diese Beschränkung kann man Maximal -90° nach unten schauen und sich nicht "überschlagen"
     rotated = true;
   }
   // Nach Links / Rechts sehen
