@@ -135,7 +135,17 @@ function registerListeners() {
 function animate() {
   requestAnimationFrame(animate); // Diese Anweisung sorgt dafür, dass die Funktion wiederholt aufgerufen wird. Dabei wird auch eine bestimmte Zeit gewartet um der Wiederholfrequenz des Bildschirms gerecht zu werden.
 
-  // Bewegungslogik der Kamera
+  runMovementLogic();
+
+  // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
+  renderer.render(scene, camera);
+}
+
+/**
+ * Diese Funktion wird aus der animate() Schleife aufgerufen.
+ * Sie kümmert sich um die Bewegungslogik der Kamera. Also z.B. wenn man 'w' drückt, dass sie sich nach vorne bewegt
+ */
+function runMovementLogic() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
   // Vor / Zurück
@@ -147,10 +157,12 @@ function animate() {
   // Oben / Unten
   if (isKeyDown(MOVE_UP) && !isKeyDown(MOVE_DOWN)) movement.setComponent(1, movementSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
   else if (isKeyDown(MOVE_DOWN) && !isKeyDown(MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
+
   camera.position.add(movement); // Die Bewegung mithilfe von Vektoraddition auf die position addieren.
 
   // Rotationslogik der Kamera
   let rotated = false; // In dieser Variable wird gespeichert, ob in dieser Iteration die Kamera rotiert wurde.
+  
   // nach Oben / Unten sehen
   if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) {
     camera.rotation.x += movementSpeed;
@@ -171,10 +183,9 @@ function animate() {
     camera.rotation.y -= movementSpeed;
     rotated = true;
   }
-  if (rotated) updateViewDirection(); // Wenn eine Rotation stattgefunden hat, den Vektor der Bewegungsrichtung aktualisieren.
 
-  // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
-  renderer.render(scene, camera);
+  // Wenn eine Rotation stattgefunden hat, den Vektor der Blickrichtung aktualisieren.
+  if (rotated) updateViewDirection();
 }
 
 /**
