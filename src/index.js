@@ -1,6 +1,7 @@
 import './index.html';
 import './style.css';
 import * as THREE from 'three';
+import * as PLANETS from './modules/planets.js';
 
 /* Globale Variablen */
 
