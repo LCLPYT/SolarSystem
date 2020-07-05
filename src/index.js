@@ -16,7 +16,7 @@ let sun;
 // Ein Feld, welches die Nummern der gerade gedrückten Tasten enthält.
 let pressedKeys = [];
 // Bewegungsgeschwindigkeit der Kamera
-const movementSpeed = 0.02;
+const movementSpeed = 10000, rotationSpeed = 0.02;
 // Nummern bestimmter Tasten
 const MOVE_FORWARDS = 87, // 'w'
       MOVE_BACKWARDS = 83, // 's'
@@ -53,7 +53,7 @@ function init() {
     75, // field of view - Blickwinkel
     window.innerWidth / window.innerHeight, // aspect ratio - Seitenverhältnis, das für Skalierungen usw. benutzt wird.
     0.1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
-    1000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
+    100000000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
   );
 
   // Der Renderer ist für das Darstellen der Objekte auf dem Bildschirm zuständig.
@@ -66,41 +66,30 @@ function init() {
   // Hinzufügen des HTML5 Leinwand Objektes (canvas)
   document.body.appendChild(renderer.domElement);
 
-  /** Hinzufügen von einer Lichtquelle TODO: später entfernen **/
-  let lamp = new THREE.PointLight(0xffffff, 1);
-  lamp.position.y = 5;
-  lamp.position.x = -4;
-  lamp.position.z = 3;
+  /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
+  let lamp = new THREE.PointLight(0xffffff, 2);
+  lamp.position.set(0, 0, 0);
   scene.add(lamp);
 
-  /** Darstellung der Sonne **/
-  addSun();
+  /** Hinzufügen Sonne **/
+  PLANETS.SUN.addToScene(scene);
+
+  /** Hinzufügen der Planeten **/
+  PLANETS.MERCURY.moveTo(750000, 0, 0).addToScene(scene);
+  PLANETS.VENUS.moveTo(850000, 0, 0).addToScene(scene);
+  PLANETS.EARTH.moveTo(980000, 0, 0).addToScene(scene);
+  PLANETS.MOON.moveTo(990000, 0, 0).addToScene(scene);
+  PLANETS.MARS.moveTo(1100000, 0, 0).addToScene(scene);
+  PLANETS.JUPITER.moveTo(1500000, 0, 0).addToScene(scene);
+  PLANETS.SATURN.moveTo(1800000, 0, 0).addToScene(scene);
+  PLANETS.URANUS.moveTo(2100000, 0, 0).addToScene(scene);
+  PLANETS.NEPTUNE.moveTo(2350000, 0, 0).addToScene(scene);
 
   // Die Kamera aus dem Koordinatenursprung bewegen, da sie sonst in der Sonne stecken würde.
-  camera.position.z = 5;
+  camera.position.z = 2000000;
 
   // Die Blickrichtung initalisieren
   updateViewDirection();
-}
-
-function addSun() {
-  // Definieren eines Geometrieobjektes, welches alle Eckpunkte, sowie Flächen dieser speichert. SphereGeometry ist in dem Fall die Geometrie für eine Kugel.
-  let sunGeometry = new THREE.SphereGeometry(
-    1, //Radius
-    64, // widthSegments - Anzahl der horizontalen Segmente der Kugel
-    64 // heightSegments - Anzahl der vertikalen Segmente der Kugel
-  );
-
-  // Definieren eines Materials, welches für das Objekt benutzt wird. Dieses Material sorgt für die Farbe des dargestellten Objektes. In diesem Fall sorgt dieses Material dafür, dass die Sonne gelb dargestellt wird.
-  let sunMaterial = new THREE.MeshStandardMaterial({
-    color: 0xFDB813, // Farbe der Sonne
-    emissive: 0xFDB813, // Sonne soll als Lichtquelle agieren, deshalb emmitiert sie Licht
-    emissiveIntensity: 0.1 // Stärke der Emmitierung (TODO test)
-  });
-  // Definieren eines Meshes. Dieses Objekt speichert eine Geometrie und ein dazugehöriges Material. Dieses Objekt repräsentiert im Moment die Sonne.
-  sun = new THREE.Mesh(sunGeometry, sunMaterial);
-  // Hinzufügen der Sonne zur Szene.
-  scene.add(sun);
 }
 
 /**
@@ -166,22 +155,22 @@ function runMovementLogic() {
   
   // nach Oben / Unten sehen
   if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) {
-    camera.rotation.x += movementSpeed;
+    camera.rotation.x += rotationSpeed;
     if (camera.rotation.x > Math.PI / 2) camera.rotation.x = Math.PI / 2; // Durch diese Beschränkung kann man Maximal 90° nach oben schauen und sich nicht "überschlagen"
     rotated = true;
   }
   else if (isKeyDown(LOOK_DOWN) && !isKeyDown(LOOK_UP)) {
-    camera.rotation.x -= movementSpeed;
+    camera.rotation.x -= rotationSpeed;
     if (camera.rotation.x < -Math.PI / 2) camera.rotation.x = -Math.PI / 2; // Durch diese Beschränkung kann man Maximal -90° nach unten schauen und sich nicht "überschlagen"
     rotated = true;
   }
   // Nach Links / Rechts sehen
   if (isKeyDown(LOOK_LEFT) && !isKeyDown(LOOK_RIGHT)) {
-    camera.rotation.y += movementSpeed;
+    camera.rotation.y += rotationSpeed;
     rotated = true;
   }
   else if (isKeyDown(LOOK_RIGHT) && !isKeyDown(LOOK_LEFT)) {
-    camera.rotation.y -= movementSpeed;
+    camera.rotation.y -= rotationSpeed;
     rotated = true;
   }
 
