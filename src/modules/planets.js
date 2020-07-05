@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { Int8Attribute, Scene } from 'three';
 
 /**
  * Repräsentation eines Planeten (oder der Sonne oder Monden). Speichert alle relevanten Daten zum Himmelskörper.

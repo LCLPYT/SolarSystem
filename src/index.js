@@ -2,6 +2,7 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import * as PLANETS from './modules/planets.js';
+import * as INPUT from './modules/input.js';
 
 /* Globale Variablen */
 
@@ -11,24 +12,8 @@ let scene, camera, renderer;
 let view = new THREE.Vector3();
 // Bewegungsrichtungs-Vektor
 let movement = new THREE.Vector3();
-// Objekte der Szene, die außerhalb von init() noch gebraucht werden.
-let sun;
-// Ein Feld, welches die Nummern der gerade gedrückten Tasten enthält.
-let pressedKeys = [];
 // Bewegungsgeschwindigkeit der Kamera
 const movementSpeed = 10000, rotationSpeed = 0.02;
-// Nummern bestimmter Tasten
-const MOVE_FORWARDS = 87, // 'w'
-      MOVE_BACKWARDS = 83, // 's'
-      MOVE_LEFT = 65, // 'a'
-      MOVE_RIGHT = 68, // 'd'
-      MOVE_UP = 32, // 'space'
-      MOVE_DOWN = 16, // 'shift'
-      LOOK_UP = 38, // 'arrow_up'
-      LOOK_DOWN = 40, // 'arrow_down'
-      LOOK_LEFT = 37, // 'arrow_left',
-      LOOK_RIGHT = 39; // 'arrow_right'
-
 // Achsen-Vektoren
 const AXIS_Y = new THREE.Vector3(0, 1, 0);
 
@@ -37,7 +22,7 @@ const AXIS_Y = new THREE.Vector3(0, 1, 0);
 // Initialisieren
 init();
 // Event listeners registrieren
-registerListeners();
+INPUT.registerInputListeners();
 // Die Hauptschleife starten.
 animate();
 
@@ -93,32 +78,6 @@ function init() {
 }
 
 /**
- * Diese Funktion registriert alle für dieses Projekt relevanten event listeners.
- * Ein EventListener ist eine Funktion, die aufgerufen wird, sobald ein bestimmtes Ereignis auftritt (z.B. eine Taste wird gedrückt)
- */
-function registerListeners() {
-  /*
-  Dieser Listener wird aufgerufen, sobald eine Taste gedrückt wird.
-  Die Funktion testet, ob die gedrückte Taste schon vorher gedrückt wurde (dieser Listener kann mehrmals auf einmal aufgerufen werden).
-  Wenn nicht, wird sich gemerkt, dass die Taste gedrückt wurde, indem die Nummer der Taste in einem Feld gespeichert wird.
-  Dieses Programm sieht die Taste solang als gedrückt an, wie diese Nummer im Feld gespeichert bleibt.
-  */
-  document.addEventListener("keydown", e => {
-    if(!pressedKeys.includes(e.which)) pressedKeys.push(e.which);
-  }, false);
-
-  /*
-  Dieser Listener ist das Gegenstück zum 'keydown' Listener, er wird aufgerufen, sobald eine Taste losgelassen wird.
-  Wenn die Nummer der Taste im Feld gespeichert ist, wird sie entfernt und somit nicht mehr als gedrückt angesehen.
-  */
-  document.addEventListener("keyup", e => {
-    if(!pressedKeys.includes(e.which)) return;
-    let index = pressedKeys.indexOf(e.which);
-    if(index >= 0) pressedKeys.splice(index, 1);
-  }, false);
-}
-
-/**
  * Diese Funktion ist eine Schleife, welche für das Aktualisieren des Bildschirms zuständig ist.
  * In ihr wird der Renderer aufgerufen.
  */
@@ -139,14 +98,14 @@ function runMovementLogic() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
   // Vor / Zurück
-  if (isKeyDown(MOVE_FORWARDS) && !isKeyDown(MOVE_BACKWARDS)) movement.add(view); // Die Blickrichtung entspricht der Richtung vorwärts und ist auch schon skaliert, daher kann der Vektor einfach addiert werden.
-  else if (isKeyDown(MOVE_BACKWARDS) && !isKeyDown(MOVE_FORWARDS)) movement.sub(view); // Wie in der Zeile darüber, nur wird der Vektor dieses mal subtrahiert und nicht addiert.
+  if (INPUT.isKeyDown(INPUT.MOVE_FORWARDS) && !INPUT.isKeyDown(INPUT.MOVE_BACKWARDS)) movement.add(view); // Die Blickrichtung entspricht der Richtung vorwärts und ist auch schon skaliert, daher kann der Vektor einfach addiert werden.
+  else if (INPUT.isKeyDown(INPUT.MOVE_BACKWARDS) && !INPUT.isKeyDown(INPUT.MOVE_FORWARDS)) movement.sub(view); // Wie in der Zeile darüber, nur wird der Vektor dieses mal subtrahiert und nicht addiert.
   // Links / Rechts
-  if (isKeyDown(MOVE_LEFT) && !isKeyDown(MOVE_RIGHT)) movement.add(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // Gleiches Prinzip, wie für Vor / Zurück, nur dass der Bewegungsrichtungsvektor 90° an der y-Achse rotiert ist.
-  else if (isKeyDown(MOVE_RIGHT) && !isKeyDown(MOVE_LEFT)) movement.sub(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // **
+  if (INPUT.isKeyDown(INPUT.MOVE_LEFT) && !INPUT.isKeyDown(INPUT.MOVE_RIGHT)) movement.add(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // Gleiches Prinzip, wie für Vor / Zurück, nur dass der Bewegungsrichtungsvektor 90° an der y-Achse rotiert ist.
+  else if (INPUT.isKeyDown(INPUT.MOVE_RIGHT) && !INPUT.isKeyDown(INPUT.MOVE_LEFT)) movement.sub(view.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // **
   // Oben / Unten
-  if (isKeyDown(MOVE_UP) && !isKeyDown(MOVE_DOWN)) movement.setComponent(1, movementSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
-  else if (isKeyDown(MOVE_DOWN) && !isKeyDown(MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
+  if (INPUT.isKeyDown(INPUT.MOVE_UP) && !INPUT.isKeyDown(INPUT.MOVE_DOWN)) movement.setComponent(1, movementSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
+  else if (INPUT.isKeyDown(INPUT.MOVE_DOWN) && !INPUT.isKeyDown(INPUT.MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
 
   camera.position.add(movement); // Die Bewegung mithilfe von Vektoraddition auf die position addieren.
 
@@ -154,38 +113,28 @@ function runMovementLogic() {
   let rotated = false; // In dieser Variable wird gespeichert, ob in dieser Iteration die Kamera rotiert wurde.
   
   // nach Oben / Unten sehen
-  if (isKeyDown(LOOK_UP) && !isKeyDown(LOOK_DOWN)) {
+  if (INPUT.isKeyDown(INPUT.LOOK_UP) && !INPUT.isKeyDown(INPUT.LOOK_DOWN)) {
     camera.rotation.x += rotationSpeed;
     if (camera.rotation.x > Math.PI / 2) camera.rotation.x = Math.PI / 2; // Durch diese Beschränkung kann man Maximal 90° nach oben schauen und sich nicht "überschlagen"
     rotated = true;
   }
-  else if (isKeyDown(LOOK_DOWN) && !isKeyDown(LOOK_UP)) {
+  else if (INPUT.isKeyDown(INPUT.LOOK_DOWN) && !INPUT.isKeyDown(INPUT.LOOK_UP)) {
     camera.rotation.x -= rotationSpeed;
     if (camera.rotation.x < -Math.PI / 2) camera.rotation.x = -Math.PI / 2; // Durch diese Beschränkung kann man Maximal -90° nach unten schauen und sich nicht "überschlagen"
     rotated = true;
   }
   // Nach Links / Rechts sehen
-  if (isKeyDown(LOOK_LEFT) && !isKeyDown(LOOK_RIGHT)) {
+  if (INPUT.isKeyDown(INPUT.LOOK_LEFT) && !INPUT.isKeyDown(INPUT.LOOK_RIGHT)) {
     camera.rotation.y += rotationSpeed;
     rotated = true;
   }
-  else if (isKeyDown(LOOK_RIGHT) && !isKeyDown(LOOK_LEFT)) {
+  else if (INPUT.isKeyDown(INPUT.LOOK_RIGHT) && !INPUT.isKeyDown(INPUT.LOOK_LEFT)) {
     camera.rotation.y -= rotationSpeed;
     rotated = true;
   }
 
   // Wenn eine Rotation stattgefunden hat, den Vektor der Blickrichtung aktualisieren.
   if (rotated) updateViewDirection();
-}
-
-/**
- * Testet, ob eine Taste gerade gedrückt ist.
- * 
- * @param {number} keyCode Die Nummer der Taste.
- * @returns {boolean} True, wenn die Taste mit der angegebenen Nummer gerade gedrückt ist.
- */
-function isKeyDown(keyCode) {
-  return pressedKeys.includes(keyCode);
 }
 
 /**
