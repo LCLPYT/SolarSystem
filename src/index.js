@@ -7,6 +7,8 @@ import * as MOVEMENT from './modules/movement.js'
 
 /* Globale Variablen */
 
+export const scale = 0.000001;
+
 // Die drei Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
 export let scene, camera, renderer;
 
@@ -30,8 +32,8 @@ function init() {
   camera = new THREE.PerspectiveCamera(
     75, // field of view - Blickwinkel
     window.innerWidth / window.innerHeight, // aspect ratio - Seitenverhältnis, das für Skalierungen usw. benutzt wird.
-    0.1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
-    100000000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
+    1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
+    10000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
   );
 
   // Der Renderer ist für das Darstellen der Objekte auf dem Bildschirm zuständig.
@@ -53,18 +55,20 @@ function init() {
   PLANETS.SUN.addToScene(scene);
 
   /** Hinzufügen der Planeten **/
-  PLANETS.MERCURY.moveTo(750000, 0, 0).addToScene(scene);
-  PLANETS.VENUS.moveTo(850000, 0, 0).addToScene(scene);
-  PLANETS.EARTH.moveTo(980000, 0, 0).addToScene(scene);
-  PLANETS.MOON.moveTo(990000, 0, 0).addToScene(scene);
-  PLANETS.MARS.moveTo(1100000, 0, 0).addToScene(scene);
-  PLANETS.JUPITER.moveTo(1500000, 0, 0).addToScene(scene);
-  PLANETS.SATURN.moveTo(1800000, 0, 0).addToScene(scene);
-  PLANETS.URANUS.moveTo(2100000, 0, 0).addToScene(scene);
-  PLANETS.NEPTUNE.moveTo(2350000, 0, 0).addToScene(scene);
+  PLANETS.MERCURY.addToScene(scene);
+  PLANETS.VENUS.addToScene(scene);
+  PLANETS.EARTH.addToScene(scene);
+  PLANETS.MOON.addToScene(scene);
+  PLANETS.MARS.addToScene(scene);
+  PLANETS.JUPITER.addToScene(scene);
+  PLANETS.SATURN.addToScene(scene);
+  PLANETS.URANUS.addToScene(scene);
+  PLANETS.NEPTUNE.addToScene(scene);
+  PLANETS.PLUTO.addToScene(scene);
 
   // Die Kamera aus dem Koordinatenursprung bewegen, da sie sonst in der Sonne stecken würde.
-  camera.position.z = 2000000;
+  camera.position.z = 9000;
+  //camera.lookAt(PLANETS.JUPITER.mesh.position);
 
   // Die Blickrichtung initalisieren
   MOVEMENT.updateViewDirection();
