@@ -51,6 +51,7 @@ export class Planet {
             color: this.color
         });
         this.orbit = new THREE.LineLoop(circleGeometry, circleMaterial); // LineLoop, damit der Kreis geschlossen ist.
+        this.orbit.rotation.x = Math.PI / 2;
 
         this.label = document.createElement("div");
         this.label.classList.add("label");

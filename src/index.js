@@ -71,8 +71,8 @@ function init() {
   PLANETS.PLUTO.addToScene(scene);
 
   // Die Kamera aus dem Koordinatenursprung bewegen, da sie sonst in der Sonne stecken würde.
-  camera.position.z = 9000;
-  //camera.lookAt(PLANETS.JUPITER.mesh.position);
+  camera.position.set(0, 1000, 2000);
+  camera.lookAt(PLANETS.SUN.mesh.position);
 
   // Die Blickrichtung initalisieren
   MOVEMENT.updateViewDirection();
