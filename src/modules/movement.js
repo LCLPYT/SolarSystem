@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera} from './../index.js';
+import {camera, controls} from './../index.js';
+import { ReverseSubtractEquation } from 'three';
 
 // Bewegungsgeschwindigkeiten der Kamera
 export let movementSpeed = 10;
@@ -17,6 +18,8 @@ const AXIS_Y = new THREE.Vector3(0, 1, 0);
  */
 export function tick() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
+
+  if(!controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
 
   let step = view.clone();
   step.multiplyScalar(movementSpeed);
