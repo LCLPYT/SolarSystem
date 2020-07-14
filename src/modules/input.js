@@ -40,13 +40,9 @@ export function registerInputListeners() {
             if (index >= 0) pressedKeys.splice(index, 1);
       }, false);
 
-      document.body.addEventListener("click", e => {
-            console.log(e);
-      });
-
       document.body.addEventListener("wheel", e => {
-            if(e.deltaY < 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier + 0.05);
-            else if(e.deltaY > 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier - (MOVEMENT.movementMultiplier <= 0.05 ? 0.001 : 0.05));
+            if(e.deltaY < 0) MOVEMENT.setMovementSpeed(MOVEMENT.movementSpeed + 1);
+            else if(e.deltaY > 0) MOVEMENT.setMovementSpeed(MOVEMENT.movementSpeed - 1);
       });
 }
 
