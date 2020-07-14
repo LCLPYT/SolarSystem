@@ -1,6 +1,7 @@
 import './index.html';
 import './style.css';
 import * as THREE from 'three';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as PLANETS from './modules/planets.js';
 import * as INPUT from './modules/input.js';
 import * as MOVEMENT from './modules/movement.js'
@@ -9,8 +10,8 @@ import * as MOVEMENT from './modules/movement.js'
 
 export const scale = 0.000001;
 
-// Die drei Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
-export let scene, camera, renderer;
+// Die vier Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
+export let scene, camera, renderer, cssRenderer;
 
 // Das HTML5 Leinwand (canvas) Objekt, auf welchem der renderer abbildet.
 export let canvas;
@@ -45,10 +46,17 @@ function init() {
   });
   // Setzen der Auflösung. Hier wird sie der des Bildschirms angepasst.
   renderer.setSize(window.innerWidth, window.innerHeight);
-
   // Hinzufügen des HTML5 Leinwand Objektes (canvas)
   canvas = renderer.domElement;
   document.body.appendChild(canvas);
+
+  // Der CSS2DRenderer ist für das Darstellen von 2D-CSS-Objekten, welche auch in der Szene als CSS2DObject vorhanden sind, zuständig.
+  cssRenderer = new CSS2DRenderer();
+  cssRenderer.setSize(window.innerWidth, window.innerHeight);
+  cssRenderer.domElement.style.position = 'absolute'; // css position Attribut auf absolut setzen, damit es aus dem normalen Layoutfluss entnommen wird.
+  cssRenderer.domElement.style.top = '0px';
+  //Hinzufügen des HTML5 Leinwand Objektes zur HTML-Seite
+  document.body.appendChild(cssRenderer.domElement);
 
   /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
   let lamp = new THREE.PointLight(0xffffff, 2);
@@ -89,7 +97,5 @@ function animate() {
 
   // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
   renderer.render(scene, camera);
-
-  // Zeichnen der Planetenbeschriftungen.
-  PLANETS.drawPlanetLabels();
+  cssRenderer.render(scene, camera);
 }

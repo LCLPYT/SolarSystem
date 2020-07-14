@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {
     scale, canvas, camera
-} from './../index.js'
+} from './../index.js';
 
 // Dieses Feld enthält alle Planeten, welche in die Szene hinzugefügt wurden.
 let planetsInScene = [];
@@ -53,10 +54,13 @@ export class Planet {
         this.orbit = new THREE.LineLoop(circleGeometry, circleMaterial); // LineLoop, damit der Kreis geschlossen ist.
         this.orbit.rotation.x = Math.PI / 2;
 
-        this.label = document.createElement("div");
-        this.label.classList.add("label");
+        let div = document.createElement("div");
+        div.classList.add("label");
         let text = document.createTextNode(this.name);
-        this.label.appendChild(text);
+        div.appendChild(text);
+        this.label = new CSS2DObject(div);
+        this.label.position.set(0, this.radius * scale, 0); // Relative Position zum Planeten setzen.
+        this.mesh.add(this.label);
     }
 
     isInitialized() {
@@ -74,8 +78,6 @@ export class Planet {
 
         scene.add(this.orbit);
         scene.add(this.mesh);
-
-        document.body.insertBefore(this.label, canvas);
 
         // Hinzufügen des Planeten in das Feld der Planeten, welche momentan in der Szene sind.
         if (!planetsInScene.includes(this)) planetsInScene.push(this);
@@ -110,22 +112,3 @@ export const
     URANUS = new Planet("Uranus", 0x87f5e8, 25362, 2870000000),
     NEPTUNE = new Planet("Neptun", 0x5665a6, 24622, 4496000000),
     PLUTO = new Planet("Pluto", 0x736750, 1188, 5900000000);
-
-/**
- * Diese Funktion zeichnet die Planetenbeschriftungen, welche man immer sehen kann, egal wie weit die Planeten entfernt sind.
- */
-export function drawPlanetLabels() {
-    planetsInScene.forEach(planet => {
-        let vector = planet.mesh.position.clone(); // Duplizieren der Koordinaten des Planeten.
-        vector.project(camera); // 3D Koordinaten in 2D-Koordinaten (NDC) umwandeln.
-
-        // Skalieren der NDC Koordinaten (-1..1) zu Bildschirmkooridnaten
-        vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
-        vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
-
-        // Bewegen des DIV-Elements des Planeten zur ausgerechneten Stelle.
-        let label = planet.label;
-        label.style.left = `${vector.x}px`;
-        label.style.top = `${vector.y}px`;
-    });
-}
