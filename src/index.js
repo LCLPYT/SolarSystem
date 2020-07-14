@@ -2,6 +2,7 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import * as PLANETS from './modules/planets.js';
 import * as INPUT from './modules/input.js';
 import * as MOVEMENT from './modules/movement.js'
@@ -11,10 +12,13 @@ import * as MOVEMENT from './modules/movement.js'
 export const scale = 0.000001;
 
 // Die vier Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
-export let scene, camera, renderer, cssRenderer;
+export let scene, camera, renderer, cssRenderer, controls;
 
 // Das HTML5 Leinwand (canvas) Objekt, auf welchem der renderer abbildet.
 export let canvas;
+
+// Das HTML div Objekt, welches als Menu dient.
+export let menu;
 
 /* - */
 
@@ -29,6 +33,8 @@ animate();
  * Initialisiert den Renderer, die Szene und Kamera, sowie die Objekte, die dargestellt werden sollen.
  */
 function init() {
+  menu = document.getElementById("menu");
+
   // Die Szene enthält die Objekte, die später auf dem Bildschirm abgebildet werden sollen.
   scene = new THREE.Scene();
 
@@ -57,6 +63,9 @@ function init() {
   cssRenderer.domElement.style.top = '0px';
   //Hinzufügen des HTML5 Leinwand Objektes zur HTML-Seite
   document.body.appendChild(cssRenderer.domElement);
+
+  // Festlegen der Controls
+  controls = new PointerLockControls(camera, document.body);
 
   /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
   let lamp = new THREE.PointLight(0xffffff, 2);

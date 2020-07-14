@@ -1,4 +1,6 @@
 import * as MOVEMENT from "./movement";
+import * as UTILS from "./utils";
+import { controls, menu } from "..";
 
 // Die Tastennummern für bestimmte Aktionen im Programm.
 export const MOVE_FORWARDS = 87, // 'w'
@@ -40,13 +42,37 @@ export function registerInputListeners() {
             if (index >= 0) pressedKeys.splice(index, 1);
       }, false);
 
-      document.body.addEventListener("click", e => {
-            console.log(e);
+      // Dieser Listener wird aufgerufen, sobald man auf der Webseite das Mausrad dreht. Wenn dies geschieht, wird hier die Bewegungsgeschwindigkeit verändert.
+      document.body.addEventListener("wheel", e => {
+            // Vorzeichen der Mausbewegung feststellen. -1, wenn negativ, +1 wenn positiv, 0 wenn 0. 
+            // Danach Vorzeichen umkehren für den nächsten Schritt.
+            let sign = Math.sign(e.deltaY) * -1;
+
+            // Ausrechnen der neuen Bewegungsgeschwindigkeit.
+            let newSpeed = UTILS.clamp(MOVEMENT.movementSpeed + sign * 0.5, 0, 20);
+
+            // Setzen der neuen Bewegungsgeschwindigkeit.
+            MOVEMENT.setMovementSpeed(newSpeed);
+      });
+      
+      // Dieser Listener
+      let firstLock = true;
+      document.body.addEventListener("click", () => {
+            controls.lock();
+            if(firstLock) {
+                  firstLock = false;
+                  document.getElementById("title").innerHTML = "Klicken, um fortzufahren";
+            }
+            menu.hidden = true;
       });
 
-      document.body.addEventListener("wheel", e => {
-            if(e.deltaY < 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier + 0.05);
-            else if(e.deltaY > 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier - (MOVEMENT.movementMultiplier <= 0.05 ? 0.001 : 0.05));
+      controls.addEventListener("unlock", () => {
+            menu.hidden = false;
+            pressedKeys.length = 0;
+      });
+
+      controls.addEventListener("change", () => {
+            MOVEMENT.updateViewDirection();
       });
 }
 
