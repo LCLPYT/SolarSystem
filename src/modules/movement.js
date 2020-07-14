@@ -5,6 +5,7 @@ import {camera} from './../index.js';
 // Bewegungsgeschwindigkeiten der Kamera
 const movementSpeed = 10,
   rotationSpeed = 0.02;
+export let movementMultiplier = 1;
 // Die Blickrichtung als Vektor
 let view = new THREE.Vector3();
 // Bewegung als Vektor
@@ -17,6 +18,7 @@ const AXIS_Y = new THREE.Vector3(0, 1, 0);
  * Sie kümmert sich um die Bewegungslogik der Kamera. Also z.B. wenn man 'w' drückt, dass sie sich nach vorne bewegt
  */
 export function tick() {
+  if(movementMultiplier != 1) view.multiplyScalar(movementMultiplier);
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
   // Vor / Zurück
@@ -53,6 +55,8 @@ export function tick() {
     rotated = true;
   }
 
+  if(movementMultiplier != 1) view.divideScalar(movementMultiplier);
+
   // Wenn eine Rotation stattgefunden hat, den Vektor der Blickrichtung aktualisieren.
   if (rotated) updateViewDirection();
 }
@@ -73,4 +77,9 @@ function isKeyDown(key) {
 export function updateViewDirection() {
   camera.getWorldDirection(view); // Berechnet die Blickrichtung der Kamera und speichert sie in 'view'.
   view.multiplyScalar(movementSpeed); // Bewegungsrichtung aus Performancegründen direkt hier skalieren.
+}
+
+export function setMovementMultiplier(mult) {
+  console.log(mult);
+  if(mult >= 0) movementMultiplier = mult;
 }

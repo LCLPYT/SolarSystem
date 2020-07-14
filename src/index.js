@@ -32,7 +32,7 @@ function init() {
   camera = new THREE.PerspectiveCamera(
     75, // field of view - Blickwinkel
     window.innerWidth / window.innerHeight, // aspect ratio - Seitenverhältnis, das für Skalierungen usw. benutzt wird.
-    1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
+    0.1, // near clipping pane - Objekte die näher an der Kamera als diese Distanz sind, werden ausgeblendet.
     10000 // far clipping pane - Objekte die weiter entfernt von der Kamera als diese Distanz sind, werden ausgeblendet (aus Leistungsgründen)
   );
 

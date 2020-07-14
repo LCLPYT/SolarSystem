@@ -1,3 +1,5 @@
+import * as MOVEMENT from "./movement";
+
 // Die Tastennummern für bestimmte Aktionen im Programm.
 export const MOVE_FORWARDS = 87, // 'w'
       MOVE_BACKWARDS = 83, // 's'
@@ -37,6 +39,15 @@ export function registerInputListeners() {
             let index = pressedKeys.indexOf(e.which);
             if (index >= 0) pressedKeys.splice(index, 1);
       }, false);
+
+      document.body.addEventListener("click", e => {
+            console.log(e);
+      });
+
+      document.body.addEventListener("wheel", e => {
+            if(e.deltaY < 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier + 0.05);
+            else if(e.deltaY > 0) MOVEMENT.setMovementMultiplier(MOVEMENT.movementMultiplier - (MOVEMENT.movementMultiplier <= 0.05 ? 0.001 : 0.05));
+      });
 }
 
 /**
