@@ -5,3 +5,8 @@ body {
 canvas {
     display: block;
 }
+.label {
+    position: absolute;
+    z-index: 1;
+    color: white;
+}

@@ -12,6 +12,9 @@ export const scale = 0.000001;
 // Die drei Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
 export let scene, camera, renderer;
 
+// Das HTML5 Leinwand (canvas) Objekt, auf welchem der renderer abbildet.
+export let canvas;
+
 /* - */
 
 // Initialisieren
@@ -44,7 +47,8 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   // Hinzufügen des HTML5 Leinwand Objektes (canvas)
-  document.body.appendChild(renderer.domElement);
+  canvas = renderer.domElement;
+  document.body.appendChild(canvas);
 
   /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
   let lamp = new THREE.PointLight(0xffffff, 2);
@@ -67,8 +71,8 @@ function init() {
   PLANETS.PLUTO.addToScene(scene);
 
   // Die Kamera aus dem Koordinatenursprung bewegen, da sie sonst in der Sonne stecken würde.
-  camera.position.z = 9000;
-  //camera.lookAt(PLANETS.JUPITER.mesh.position);
+  camera.position.set(0, 1000, 2000);
+  camera.lookAt(PLANETS.SUN.mesh.position);
 
   // Die Blickrichtung initalisieren
   MOVEMENT.updateViewDirection();
@@ -85,4 +89,7 @@ function animate() {
 
   // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
   renderer.render(scene, camera);
+
+  // Zeichnen der Planetenbeschriftungen.
+  PLANETS.drawPlanetLabels();
 }
