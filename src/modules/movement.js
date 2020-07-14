@@ -3,8 +3,7 @@ import * as INPUT from './input.js';
 import {camera} from './../index.js';
 
 // Bewegungsgeschwindigkeiten der Kamera
-export let movementSpeed = 10,
-  rotationSpeed = 0.02;
+export let movementSpeed = 10;
 // Die Blickrichtung als Vektor
 let view = new THREE.Vector3();
 // Bewegung als Vektor
@@ -33,31 +32,6 @@ export function tick() {
   else if (isKeyDown(INPUT.MOVE_DOWN) && !isKeyDown(INPUT.MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
 
   camera.position.add(movement); // Die Bewegung mithilfe von Vektoraddition auf die position addieren.
-
-  // Rotationslogik der Kamera
-  let rotated = false; // In dieser Variable wird gespeichert, ob in dieser Iteration die Kamera rotiert wurde.
-
-  // nach Oben / Unten sehen
-  if (isKeyDown(INPUT.LOOK_UP) && !isKeyDown(INPUT.LOOK_DOWN)) {
-    camera.rotation.x += rotationSpeed;
-    if (camera.rotation.x > Math.PI / 2) camera.rotation.x = Math.PI / 2; // Durch diese Beschränkung kann man Maximal 90° nach oben schauen und sich nicht "überschlagen"
-    rotated = true;
-  } else if (isKeyDown(INPUT.LOOK_DOWN) && !isKeyDown(INPUT.LOOK_UP)) {
-    camera.rotation.x -= rotationSpeed;
-    if (camera.rotation.x < -Math.PI / 2) camera.rotation.x = -Math.PI / 2; // Durch diese Beschränkung kann man Maximal -90° nach unten schauen und sich nicht "überschlagen"
-    rotated = true;
-  }
-  // Nach Links / Rechts sehen
-  if (isKeyDown(INPUT.LOOK_LEFT) && !isKeyDown(INPUT.LOOK_RIGHT)) {
-    camera.rotation.y += rotationSpeed;
-    rotated = true;
-  } else if (isKeyDown(INPUT.LOOK_RIGHT) && !isKeyDown(INPUT.LOOK_LEFT)) {
-    camera.rotation.y -= rotationSpeed;
-    rotated = true;
-  }
-
-  // Wenn eine Rotation stattgefunden hat, den Vektor der Blickrichtung aktualisieren.
-  if (rotated) updateViewDirection();
 }
 
 /**
