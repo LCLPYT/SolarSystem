@@ -41,8 +41,9 @@ export function registerInputListeners() {
       }, false);
 
       document.body.addEventListener("wheel", e => {
-            if(e.deltaY < 0) MOVEMENT.setMovementSpeed(MOVEMENT.movementSpeed + 1);
-            else if(e.deltaY > 0) MOVEMENT.setMovementSpeed(MOVEMENT.movementSpeed - 1);
+            let sign = Math.sign(e.deltaY) * -1;
+            let newSpeed = Math.min(Math.max(MOVEMENT.movementSpeed + sign * 0.5, 0), 20);
+            MOVEMENT.setMovementSpeed(newSpeed);
       });
 }
 

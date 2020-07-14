@@ -83,5 +83,6 @@ export function updateViewDirection() {
  * @param {number} speed Die Bewegungsgeschwindigkeit in Einheiten/Sekunde
  */
 export function setMovementSpeed(speed) {
-  movementSpeed = Math.max(0, speed);
+  console.log(speed);
+  movementSpeed = Math.max(0, speed); // movementSpeed kann hiermit nicht kleiner als 0 werden.
 }
