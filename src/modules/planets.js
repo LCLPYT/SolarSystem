@@ -119,10 +119,11 @@ export function drawPlanetLabels() {
         let vector = planet.mesh.position.clone(); // Duplizieren der Koordinaten des Planeten.
         vector.project(camera); // 3D Koordinaten in 2D-Koordinaten (NDC) umwandeln.
 
-        // Umwandeln in Bildschirm Koordinaten
+        // Skalieren der NDC Koordinaten (-1..1) zu Bildschirmkooridnaten
         vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
         vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
 
+        // Bewegen des DIV-Elements des Planeten zur ausgerechneten Stelle.
         let label = planet.label;
         label.style.left = `${vector.x}px`;
         label.style.top = `${vector.y}px`;
