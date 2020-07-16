@@ -2,7 +2,6 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import * as PLANETS from './modules/planets.js';
 import * as INPUT from './modules/input.js';
 import * as MOVEMENT from './modules/movement.js'
@@ -12,7 +11,7 @@ import * as MOVEMENT from './modules/movement.js'
 export const scale = 0.000001;
 
 // Die vier Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
-export let scene, camera, renderer, cssRenderer, controls;
+export let scene, camera, renderer, cssRenderer;
 
 // Das HTML5 Leinwand (canvas) Objekt, auf welchem der renderer abbildet.
 export let canvas;
@@ -60,12 +59,10 @@ function init() {
   cssRenderer = new CSS2DRenderer();
   cssRenderer.setSize(window.innerWidth, window.innerHeight);
   cssRenderer.domElement.style.position = 'absolute'; // css position Attribut auf absolut setzen, damit es aus dem normalen Layoutfluss entnommen wird.
-  cssRenderer.domElement.style.top = '0px';
-  //Hinzufügen des HTML5 Leinwand Objektes zur HTML-Seite
+  cssRenderer.domElement.style.top = '0px'; // Position setzen, damit das Element angezeigt wird
+  cssRenderer.domElement.style.pointerEvents = 'none'; // Auf 'none' setzen, damit Klicks auf die untere Leinwand weitergeleitet werden.
+  //Hinzufügen des HTML (div) Objektes zur HTML-Seite
   document.body.appendChild(cssRenderer.domElement);
-
-  // Festlegen der Controls
-  controls = new PointerLockControls(camera, document.body);
 
   /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
   let lamp = new THREE.PointLight(0xffffff, 2);
@@ -93,6 +90,9 @@ function init() {
 
   // Die Blickrichtung initalisieren
   MOVEMENT.updateViewDirection();
+
+  // Die Bewegungskontrolle festlegen.
+  MOVEMENT.bindControls();
 }
 
 /**

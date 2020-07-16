@@ -1,6 +1,6 @@
 import * as MOVEMENT from "./movement";
 import * as UTILS from "./utils";
-import { controls, menu } from "..";
+import { menu } from "..";
 
 // Die Tastennummern für bestimmte Aktionen im Programm.
 export const MOVE_FORWARDS = 87, // 'w'
@@ -44,6 +44,8 @@ export function registerInputListeners() {
 
       // Dieser Listener wird aufgerufen, sobald man auf der Webseite das Mausrad dreht. Wenn dies geschieht, wird hier die Bewegungsgeschwindigkeit verändert.
       document.body.addEventListener("wheel", e => {
+            if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
+
             // Vorzeichen der Mausbewegung feststellen. -1, wenn negativ, +1 wenn positiv, 0 wenn 0. 
             // Danach Vorzeichen umkehren für den nächsten Schritt.
             let sign = Math.sign(e.deltaY) * -1;
@@ -53,12 +55,14 @@ export function registerInputListeners() {
 
             // Setzen der neuen Bewegungsgeschwindigkeit.
             MOVEMENT.setMovementSpeed(newSpeed);
-      });
+      }, false);
       
-      // Dieser Listener
+      // Dieser Listener wird aufgerufen, wenn der Benutzer anfängt, linkszuklicken.
       let firstLock = true;
-      document.body.addEventListener("click", () => {
-            controls.lock();
+      menu.addEventListener("mousedown", () => {
+            if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
+
+            MOVEMENT.controls.lock();
             if(firstLock) {
                   firstLock = false;
                   document.getElementById("title").innerHTML = "Klicken, um fortzufahren";
@@ -66,14 +70,9 @@ export function registerInputListeners() {
             menu.hidden = true;
       });
 
-      controls.addEventListener("unlock", () => {
-            menu.hidden = false;
-            pressedKeys.length = 0;
-      });
-
-      controls.addEventListener("change", () => {
-            MOVEMENT.updateViewDirection();
-      });
+      document.getElementById("movementModeToggler").addEventListener("click", e => {
+            MOVEMENT.toggleMovementMode();
+      }, false);
 }
 
 /**
@@ -84,4 +83,11 @@ export function registerInputListeners() {
  */
 export function isKeyDown(keyCode) {
       return pressedKeys.includes(keyCode);
+}
+
+/**
+ * Diese Funktion leert das pressedKeys feld.
+ */
+export function unpressAllKeys() {
+      pressedKeys.length = 0;
 }

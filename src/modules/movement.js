@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera, controls} from './../index.js';
-import { ReverseSubtractEquation } from 'three';
+import {camera, canvas, menu} from './../index.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Bewegungsgeschwindigkeiten der Kamera
 export let movementSpeed = 10;
@@ -12,6 +13,57 @@ let movement = new THREE.Vector3();
 // Achsen-Vektoren
 const AXIS_Y = new THREE.Vector3(0, 1, 0);
 
+// Eine Aufzählung aller Bewegungsarten
+export const movementModes = {
+  ORIBIT: "orbit",
+  POINTERLOCK: "pointerlock"
+}
+// Die momentane Bewegungsart. Standard ist OrbitControls.
+export let movementMode = movementModes.ORIBIT;
+
+// Die Bewegungskontrollen-Instanz
+export let controls;
+
+/**
+ * Diese Funktion definiert die Bewegungskontrollen-Instanz.
+ */
+export function bindControls() {
+  // Festlegen der Controls
+  if(movementMode === movementModes.ORIBIT) {
+    controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true; // Macht die ganze Bewegung flüssiger
+  }
+  else if(movementMode === movementModes.POINTERLOCK) {
+    controls = new PointerLockControls(camera, document.body);
+    controls.addEventListener("unlock", () => {
+      menu.hidden = false;
+      INPUT.unpressAllKeys();
+    });
+    controls.addEventListener("change", () => {
+      updateViewDirection();
+    });
+  }
+}
+
+/**
+ * Diese Funktion wechselt den Bewegungsmodus.
+ */
+export function toggleMovementMode() {
+  let wasOrbit = movementMode === movementModes.ORIBIT;
+  movementMode = wasOrbit ? movementModes.POINTERLOCK : movementModes.ORIBIT;
+
+  if(wasOrbit) {
+    controls.dispose(); // Entfernen aller Event-Listener von OrbitControls.
+    menu.hidden = false;
+  } else {
+    if(controls.isLocked) controls.unlock(); // Entfernen des PointerLocks, sofern es vorhanden war.
+    menu.hidden = true;
+  }
+
+  // Festlegen des neuen Bewegungsmodus.
+  bindControls();
+}
+
 /**
  * Diese Funktion wird aus der animate() Schleife aufgerufen.
  * Sie kümmert sich um die Bewegungslogik der Kamera. Also z.B. wenn man 'w' drückt, dass sie sich nach vorne bewegt
@@ -19,7 +71,12 @@ const AXIS_Y = new THREE.Vector3(0, 1, 0);
 export function tick() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
-  if(!controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
+  if(movementMode === movementModes.ORIBIT) {
+    controls.update();
+    return;
+  }
+
+  if(movementMode !== movementModes.POINTERLOCK || !controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
 
   let step = view.clone();
   step.multiplyScalar(movementSpeed);
