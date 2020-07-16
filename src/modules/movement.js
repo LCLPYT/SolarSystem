@@ -38,6 +38,8 @@ export function bindControls() {
 export function tick() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
+  if(!controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
+
   let step = view.clone();
   step.multiplyScalar(movementSpeed);
 

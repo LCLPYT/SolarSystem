@@ -27,7 +27,3 @@ canvas {
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
-.centerH {
-    margin: auto;
-    width: 50%;
-}
