@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera} from './../index.js';
+import {camera, canvas} from './../index.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Bewegungsgeschwindigkeiten der Kamera
 export let movementSpeed = 10;
@@ -28,7 +29,11 @@ export let controls;
  */
 export function bindControls() {
     // Festlegen der Controls
-    controls = new PointerLockControls(camera, document.body);
+    if(movementMode === movementModes.ORIBIT) {
+      controls = new OrbitControls(camera, canvas);
+      controls.enableDamping = true; // Macht die ganze Bewegung flüssiger
+    }
+    else if(movementMode === movementModes.POINTERLOCK) controls = new PointerLockControls(camera, document.body);
 }
 
 /**
@@ -38,7 +43,12 @@ export function bindControls() {
 export function tick() {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
-  if(!controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
+  if(movementMode === movementModes.ORIBIT) {
+    controls.update();
+    return;
+  }
+
+  if(movementMode !== movementModes.POINTERLOCK || !controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
 
   let step = view.clone();
   step.multiplyScalar(movementSpeed);

@@ -43,7 +43,7 @@ export function registerInputListeners() {
       }, false);
 
       // Dieser Listener wird aufgerufen, sobald man auf der Webseite das Mausrad dreht. Wenn dies geschieht, wird hier die Bewegungsgeschwindigkeit verändert.
-      document.body.addEventListener("wheel", e => {
+      /*document.body.addEventListener("wheel", e => {
             // Vorzeichen der Mausbewegung feststellen. -1, wenn negativ, +1 wenn positiv, 0 wenn 0. 
             // Danach Vorzeichen umkehren für den nächsten Schritt.
             let sign = Math.sign(e.deltaY) * -1;
@@ -53,13 +53,13 @@ export function registerInputListeners() {
 
             // Setzen der neuen Bewegungsgeschwindigkeit.
             MOVEMENT.setMovementSpeed(newSpeed);
-      });
+      }, false);*/
       
       // Dieser Listener
-      let firstLock = true;
+      /*let firstLock = true;
       document.body.addEventListener("click", () => {
             if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
-            
+
             MOVEMENT.controls.lock();
             if(firstLock) {
                   firstLock = false;
@@ -75,7 +75,7 @@ export function registerInputListeners() {
 
       MOVEMENT.controls.addEventListener("change", () => {
             MOVEMENT.updateViewDirection();
-      });
+      });*/
 }
 
 /**

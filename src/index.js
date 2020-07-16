@@ -59,12 +59,10 @@ function init() {
   cssRenderer = new CSS2DRenderer();
   cssRenderer.setSize(window.innerWidth, window.innerHeight);
   cssRenderer.domElement.style.position = 'absolute'; // css position Attribut auf absolut setzen, damit es aus dem normalen Layoutfluss entnommen wird.
-  cssRenderer.domElement.style.top = '0px';
-  //Hinzufügen des HTML5 Leinwand Objektes zur HTML-Seite
+  cssRenderer.domElement.style.top = '0px'; // Position setzen, damit das Element angezeigt wird
+  cssRenderer.domElement.style.pointerEvents = 'none'; // Auf 'none' setzen, damit Klicks auf die untere Leinwand weitergeleitet werden.
+  //Hinzufügen des HTML (div) Objektes zur HTML-Seite
   document.body.appendChild(cssRenderer.domElement);
-
-  // Die Bewegungskontrolle festlegen.
-  MOVEMENT.bindControls();
 
   /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
   let lamp = new THREE.PointLight(0xffffff, 2);
@@ -92,6 +90,9 @@ function init() {
 
   // Die Blickrichtung initalisieren
   MOVEMENT.updateViewDirection();
+
+  // Die Bewegungskontrolle festlegen.
+  MOVEMENT.bindControls();
 }
 
 /**
