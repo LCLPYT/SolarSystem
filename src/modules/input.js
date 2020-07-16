@@ -43,7 +43,9 @@ export function registerInputListeners() {
       }, false);
 
       // Dieser Listener wird aufgerufen, sobald man auf der Webseite das Mausrad dreht. Wenn dies geschieht, wird hier die Bewegungsgeschwindigkeit verändert.
-      /*document.body.addEventListener("wheel", e => {
+      document.body.addEventListener("wheel", e => {
+            if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
+
             // Vorzeichen der Mausbewegung feststellen. -1, wenn negativ, +1 wenn positiv, 0 wenn 0. 
             // Danach Vorzeichen umkehren für den nächsten Schritt.
             let sign = Math.sign(e.deltaY) * -1;
@@ -53,11 +55,11 @@ export function registerInputListeners() {
 
             // Setzen der neuen Bewegungsgeschwindigkeit.
             MOVEMENT.setMovementSpeed(newSpeed);
-      }, false);*/
+      }, false);
       
-      // Dieser Listener
-      /*let firstLock = true;
-      document.body.addEventListener("click", () => {
+      // Dieser Listener wird aufgerufen, wenn der Benutzer anfängt, linkszuklicken.
+      let firstLock = true;
+      menu.addEventListener("mousedown", () => {
             if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
 
             MOVEMENT.controls.lock();
@@ -68,14 +70,9 @@ export function registerInputListeners() {
             menu.hidden = true;
       });
 
-      MOVEMENT.controls.addEventListener("unlock", () => {
-            menu.hidden = false;
-            pressedKeys.length = 0;
-      });
-
-      MOVEMENT.controls.addEventListener("change", () => {
-            MOVEMENT.updateViewDirection();
-      });*/
+      document.getElementById("movementModeToggler").addEventListener("click", e => {
+            MOVEMENT.toggleMovementMode();
+      }, false);
 }
 
 /**
@@ -86,4 +83,11 @@ export function registerInputListeners() {
  */
 export function isKeyDown(keyCode) {
       return pressedKeys.includes(keyCode);
+}
+
+/**
+ * Diese Funktion leert das pressedKeys feld.
+ */
+export function unpressAllKeys() {
+      pressedKeys.length = 0;
 }

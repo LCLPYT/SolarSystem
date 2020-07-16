@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera, canvas} from './../index.js';
+import {camera, canvas, menu} from './../index.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -19,7 +19,7 @@ export const movementModes = {
   POINTERLOCK: "pointerlock"
 }
 // Die momentane Bewegungsart. Standard ist OrbitControls.
-export const movementMode = movementModes.ORIBIT;
+export let movementMode = movementModes.ORIBIT;
 
 // Die Bewegungskontrollen-Instanz
 export let controls;
@@ -28,12 +28,40 @@ export let controls;
  * Diese Funktion definiert die Bewegungskontrollen-Instanz.
  */
 export function bindControls() {
-    // Festlegen der Controls
-    if(movementMode === movementModes.ORIBIT) {
-      controls = new OrbitControls(camera, canvas);
-      controls.enableDamping = true; // Macht die ganze Bewegung flüssiger
-    }
-    else if(movementMode === movementModes.POINTERLOCK) controls = new PointerLockControls(camera, document.body);
+  // Festlegen der Controls
+  if(movementMode === movementModes.ORIBIT) {
+    controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true; // Macht die ganze Bewegung flüssiger
+  }
+  else if(movementMode === movementModes.POINTERLOCK) {
+    controls = new PointerLockControls(camera, document.body);
+    controls.addEventListener("unlock", () => {
+      menu.hidden = false;
+      INPUT.unpressAllKeys();
+    });
+    controls.addEventListener("change", () => {
+      updateViewDirection();
+    });
+  }
+}
+
+/**
+ * Diese Funktion wechselt den Bewegungsmodus.
+ */
+export function toggleMovementMode() {
+  let wasOrbit = movementMode === movementModes.ORIBIT;
+  movementMode = wasOrbit ? movementModes.POINTERLOCK : movementModes.ORIBIT;
+
+  if(wasOrbit) {
+    controls.dispose(); // Entfernen aller Event-Listener von OrbitControls.
+    menu.hidden = false;
+  } else {
+    if(controls.isLocked) controls.unlock(); // Entfernen des PointerLocks, sofern es vorhanden war.
+    menu.hidden = true;
+  }
+
+  // Festlegen des neuen Bewegungsmodus.
+  bindControls();
 }
 
 /**
