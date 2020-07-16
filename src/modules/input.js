@@ -1,6 +1,6 @@
 import * as MOVEMENT from "./movement";
 import * as UTILS from "./utils";
-import { controls, menu } from "..";
+import { menu } from "..";
 
 // Die Tastennummern für bestimmte Aktionen im Programm.
 export const MOVE_FORWARDS = 87, // 'w'
@@ -58,7 +58,9 @@ export function registerInputListeners() {
       // Dieser Listener
       let firstLock = true;
       document.body.addEventListener("click", () => {
-            controls.lock();
+            if(MOVEMENT.movementMode !== MOVEMENT.movementModes.POINTERLOCK) return;
+            
+            MOVEMENT.controls.lock();
             if(firstLock) {
                   firstLock = false;
                   document.getElementById("title").innerHTML = "Klicken, um fortzufahren";
@@ -66,12 +68,12 @@ export function registerInputListeners() {
             menu.hidden = true;
       });
 
-      controls.addEventListener("unlock", () => {
+      MOVEMENT.controls.addEventListener("unlock", () => {
             menu.hidden = false;
             pressedKeys.length = 0;
       });
 
-      controls.addEventListener("change", () => {
+      MOVEMENT.controls.addEventListener("change", () => {
             MOVEMENT.updateViewDirection();
       });
 }

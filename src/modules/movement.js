@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
 import {camera} from './../index.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 // Bewegungsgeschwindigkeiten der Kamera
 export let movementSpeed = 10;
@@ -10,6 +11,25 @@ let view = new THREE.Vector3();
 let movement = new THREE.Vector3();
 // Achsen-Vektoren
 const AXIS_Y = new THREE.Vector3(0, 1, 0);
+
+// Eine Aufzählung aller Bewegungsarten
+export const movementModes = {
+  ORIBIT: "orbit",
+  POINTERLOCK: "pointerlock"
+}
+// Die momentane Bewegungsart. Standard ist OrbitControls.
+export const movementMode = movementModes.ORIBIT;
+
+// Die Bewegungskontrollen-Instanz
+export let controls;
+
+/**
+ * Diese Funktion definiert die Bewegungskontrollen-Instanz.
+ */
+export function bindControls() {
+    // Festlegen der Controls
+    controls = new PointerLockControls(camera, document.body);
+}
 
 /**
  * Diese Funktion wird aus der animate() Schleife aufgerufen.
