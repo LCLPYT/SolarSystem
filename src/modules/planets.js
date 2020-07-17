@@ -8,7 +8,7 @@ import {
 let planetsInScene = [];
 
 /**
- * Repräsentation eines Planeten (oder der Sonne oder Monden). Speichert alle relevanten Daten zum Himmelskörper.
+ * Repräsentation eines Planeten.
  */
 export class Planet {
 
@@ -16,18 +16,28 @@ export class Planet {
      * @param {string} name Der Name des Planeten.
      * @param {number} color Die Farbe des Planeten.
      * @param {number} radius Der Radius des Planeten, in km.
+     * @param {number} distanceToStar Die Distanz zum Stern, in km.
      */
-    constructor(name, color, radius, distanceToSun) {
+    constructor(name, color, radius, distanceToStar) {
         this.name = name;
         this.color = color;
         this.radius = radius;
-        this.distanceToSun = distanceToSun;
+        this.distanceToStar = distanceToStar;
     }
 
     /**
      * Initialisiert das Mesh-Objekt des Planeten.
      */
     init() {
+        this.initMesh(); // Hinzufügen der Mesh.
+        this.initOrbit(); // Hinzufügen der Umlaufbahn.
+        this.initLabel(); // Hinzufügen der Beschriftung.
+    }
+
+    /**
+     * Fügt die Three.js Komponente hinzu.
+     */
+    initMesh() {
         // Erstellen der Kugel (dem Planeten)
         let geometry = new THREE.SphereGeometry(
             this.radius * scale, // Radius
@@ -40,11 +50,16 @@ export class Planet {
             emissiveIntensity: 0.1 // Stärke der Emmitierung (TODO test)
         });
         this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.position.set(this.distanceToSun * scale, 0, 0);
+        this.mesh.position.set(this.distanceToStar * scale, 0, 0);
+    }
 
-        // Erstellen der Umlaufbahn (TODO realistische Daten anwenden)
+    /**
+     * Fügt die Umlaufbahn hinzu.
+     * TODO realistische Daten anwenden! -> Ellipse, geneigt.
+     */
+    initOrbit() {
         let circleGeometry = new THREE.CircleGeometry(
-            this.distanceToSun * scale, // Radius
+            this.distanceToStar * scale, // Radius
             128 // Anzahl der Kreissegmente
         );
         circleGeometry.vertices.shift(); // Den ersten Eckpunkt entfernen, da es keine Linie zum Zentrum geben soll.
@@ -53,7 +68,12 @@ export class Planet {
         });
         this.orbit = new THREE.LineLoop(circleGeometry, circleMaterial); // LineLoop, damit der Kreis geschlossen ist.
         this.orbit.rotation.x = Math.PI / 2;
+    }
 
+    /**
+     * Fügt die Beschriftung des Planeten ein.
+     */
+    initLabel() {
         let div = document.createElement("div");
         div.classList.add("label");
         let text = document.createTextNode(this.name);
@@ -76,7 +96,7 @@ export class Planet {
     addToScene(scene) {
         if (!this.isInitialized()) this.init();
 
-        scene.add(this.orbit);
+        if(this.orbit !== undefined) scene.add(this.orbit);
         scene.add(this.mesh);
 
         // Hinzufügen des Planeten in das Feld der Planeten, welche momentan in der Szene sind.
@@ -99,13 +119,95 @@ export class Planet {
     }
 }
 
+/**
+ * Repräsentation eines Sternes. Sterne fügen außer ihres Meshes auch noch eine Lichtquelle hinzu.
+ */
+export class Star extends Planet {
+
+    // Überschreiben der init() Funktion.
+    init() {
+        super.init(); // init() Funktion der Elternklasse aufrufen.
+
+        // Zusätzliche Aufrufe.
+
+        // Hinzufügen von einer Lichtquelle
+        this.lightSource = new THREE.PointLight(0xffffff, 2);
+        this.lightSource.position.set(this.distanceToStar, 0, 0);
+    }
+
+    // Übeschreiben der isInitialized() Funktion, mit der zusätzlichen Kondition, dass die lightSource definiert ist.
+    isInitialized() {
+        return super.isInitialized() && this.lightSource !== undefined;
+    }
+
+    // Überschreiben der addToScene() Funktion.
+    addToScene(scene) {
+        super.addToScene(scene);
+
+        // Lichtquelle zur Szene hinzufügen.
+        scene.add(this.lightSource);
+    }
+
+    // Überschreiben der initOrbit() Funktion.
+    initOrbit() {
+        // Keine Umlaufbahn hinzufügen.
+    }
+
+}
+
+/**
+ * Repräsentation eines Mondes. Ein Mond unterscheidet sich von Planeten in diesem Programm insofern, dass sie keine Beschriftungen haben.
+ */
+export class Moon extends Planet {
+
+    /**
+     * @param {string} name Der Name des Planeten.
+     * @param {number} color Die Farbe des Planeten.
+     * @param {number} radius Der Radius des Planeten, in km.
+     * @param {Planet} planet Der Planet, zu dem der Mond gehört.
+     * @param {number} distanceToPlanet Die Distanz zum Planeten, in km.
+     */
+    constructor(name, color, radius, planet, distanceToPlanet) {
+        super(name, color, radius, planet.distanceToStar + distanceToPlanet);
+        this.planet = planet;
+        this.distanceToPlanet = distanceToPlanet;
+    }
+
+    // Überschreiben der initLabel() Funktion.
+    initLabel() {
+        // Keine Beschriftung hinzufügen.
+    }
+
+    // Überschreiben der initOrbit() Funktion.
+    initOrbit() {
+        let circleGeometry = new THREE.CircleGeometry(
+            this.distanceToPlanet * scale, // Radius
+            64 // Anzahl der Kreissegmente
+        );
+        circleGeometry.vertices.shift(); // Den ersten Eckpunkt entfernen, da es keine Linie zum Zentrum geben soll.
+        let circleMaterial = new THREE.LineBasicMaterial({
+            color: this.color
+        });
+        this.orbit = new THREE.LineLoop(circleGeometry, circleMaterial); // LineLoop, damit der Kreis geschlossen ist.
+        this.orbit.rotation.x = Math.PI / 2;
+        this.orbit.position.copy(this.planet.mesh.position);
+        this.planet.mesh.add(this.orbit);
+    }
+
+    // Überschreiben von isInitialized(), hier wird die Kondition, dass label definiert sein muss, ausgelassen.
+    isInitialized() {
+        return this.mesh !== undefined && this.orbit !== undefined;
+    }
+
+}
+
 /* Definition der Planeten, der Sonne und des Mondes, Pysikalische Daten von Wikipedia */
 export const
-    SUN = new Planet("Sonne", 0xfdb813, 696342, 0),
+    SUN = new Star("Sonne", 0xfdb813, 696342, 0),
     MERCURY = new Planet("Merkur", 0xadadad, 2439, 57900000),
     VENUS = new Planet("Venus", 0xbda275, 6051, 108200000),
     EARTH = new Planet("Erde", 0x0061b5, 6371, 149600000),
-    MOON = new Planet("Mond", 0xd3d7de, 1737, EARTH.distanceToSun + 384400),
+    MOON = new Moon("Mond", 0xd3d7de, 1737, EARTH, 384400),
     MARS = new Planet("Mars", 0xb54f38, 3389, 227900000),
     JUPITER = new Planet("Jupiter", 0xb3a568, 69911, 778300000),
     SATURN = new Planet("Saturn", 0xcfc572, 58232, 1427000000),

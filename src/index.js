@@ -64,11 +64,6 @@ function init() {
   //Hinzufügen des HTML (div) Objektes zur HTML-Seite
   document.body.appendChild(cssRenderer.domElement);
 
-  /** Hinzufügen von einer Lichtquelle TODO: später in einer Klasse mit Sonne erzeugen **/
-  let lamp = new THREE.PointLight(0xffffff, 2);
-  lamp.position.set(0, 0, 0);
-  scene.add(lamp);
-
   /** Hinzufügen Sonne **/
   PLANETS.SUN.addToScene(scene);
 
