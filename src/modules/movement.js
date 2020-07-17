@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera, canvas, menu} from './../index.js';
+import {camera, canvas, menu, scale} from './../index.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-// Bewegungsgeschwindigkeiten der Kamera
+// Bewegungsgeschwindigkeiten der Kamera. In Einheiten / Sekunde.
 export let movementSpeed = 10;
 // Die Blickrichtung als Vektor
 let view = new THREE.Vector3();
@@ -67,8 +67,9 @@ export function toggleMovementMode() {
 /**
  * Diese Funktion wird aus der animate() Schleife aufgerufen.
  * Sie kümmert sich um die Bewegungslogik der Kamera. Also z.B. wenn man 'w' drückt, dass sie sich nach vorne bewegt
+ * @param {number} deltaTime Zeit seit dem tick(). In Sekunden.
  */
-export function tick() {
+export function tick(deltaTime) {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
   if(movementMode === movementModes.ORIBIT) {
@@ -79,7 +80,7 @@ export function tick() {
   if(movementMode !== movementModes.POINTERLOCK || !controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
 
   let step = view.clone();
-  step.multiplyScalar(movementSpeed);
+  step.multiplyScalar(movementSpeed * deltaTime);
 
   // Vor / Zurück
   if (isKeyDown(INPUT.MOVE_FORWARDS) && !isKeyDown(INPUT.MOVE_BACKWARDS)) movement.add(step); // Die Blickrichtung entspricht der Richtung vorwärts und ist auch schon skaliert, daher kann der Vektor einfach addiert werden.

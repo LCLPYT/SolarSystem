@@ -19,6 +19,9 @@ export let canvas;
 // Das HTML div Objekt, welches als Menu dient.
 export let menu;
 
+// Der Zeitpunkt des letzten Aufrufs von animate()
+let lastAnimateTimestamp = 0;
+
 /* - */
 
 // Initialisieren
@@ -94,10 +97,18 @@ function init() {
  * Diese Funktion ist eine Schleife, welche für das Aktualisieren des Bildschirms zuständig ist.
  * In ihr wird der Renderer aufgerufen.
  */
-function animate() {
-  requestAnimationFrame(animate); // Diese Anweisung sorgt dafür, dass die Funktion wiederholt aufgerufen wird. Dabei wird auch eine bestimmte Zeit gewartet um der Wiederholfrequenz des Bildschirms gerecht zu werden.
+function animate(now) {
+  /*
+  Diese Anweisung sorgt dafür, dass die Funktion wiederholt aufgerufen wird. 
+  Dabei wird auch eine bestimmte Zeit gewartet um der Wiederholfrequenz des Bildschirms gerecht zu werden.
+  Zudem wird ein Zeitpunkt in ms mit als Parameter übergeben.
+  */
+  requestAnimationFrame(animate);
 
-  MOVEMENT.tick();
+  const deltaTime = (now - lastAnimateTimestamp) / 1000; // Zeit die seit dem letzten Aufruf von animate() vergangen ist, in Sekunden.
+  lastAnimateTimestamp = now;
+
+  MOVEMENT.tick(deltaTime);
 
   // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.
   renderer.render(scene, camera);
