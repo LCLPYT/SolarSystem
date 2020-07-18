@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import {
-    scale, canvas, camera
-} from './../index.js';
+import {scale} from './constants.js';
 
 // Dieses Feld enthält alle Planeten, welche in die Szene hinzugefügt wurden.
 let planetsInScene = [];
@@ -126,13 +124,17 @@ export class Star extends Planet {
 
     // Überschreiben der init() Funktion.
     init() {
-        super.init(); // init() Funktion der Elternklasse aufrufen.
+        super.initMesh();
+        super.initLabel();
+        this.initLightSource();
+    }
 
-        // Zusätzliche Aufrufe.
-
-        // Hinzufügen von einer Lichtquelle
-        this.lightSource = new THREE.PointLight(0xffffff, 2);
-        this.lightSource.position.set(this.distanceToStar, 0, 0);
+    /**
+     * Fügt eine Lichtquelle hinzu.
+     */
+    initLightSource() {
+        this.lightSource = new THREE.PointLight(0xffffff, 2); // (Lichtfarbe (Spektrum), Intensität)
+        this.lightSource.position.set(this.distanceToStar, 0, 0); // Zum Stern bewegen.
     }
 
     // Übeschreiben der isInitialized() Funktion, mit der zusätzlichen Kondition, dass die lightSource definiert ist.
@@ -146,11 +148,6 @@ export class Star extends Planet {
 
         // Lichtquelle zur Szene hinzufügen.
         scene.add(this.lightSource);
-    }
-
-    // Überschreiben der initOrbit() Funktion.
-    initOrbit() {
-        // Keine Umlaufbahn hinzufügen.
     }
 
 }
@@ -173,11 +170,6 @@ export class Moon extends Planet {
         this.distanceToPlanet = distanceToPlanet;
     }
 
-    // Überschreiben der initLabel() Funktion.
-    initLabel() {
-        // Keine Beschriftung hinzufügen.
-    }
-
     // Überschreiben der initOrbit() Funktion.
     initOrbit() {
         let circleGeometry = new THREE.CircleGeometry(
@@ -192,6 +184,12 @@ export class Moon extends Planet {
         this.orbit.rotation.x = Math.PI / 2;
         this.orbit.position.copy(this.planet.mesh.position);
         this.planet.mesh.add(this.orbit);
+    }
+
+    // Überschreiben der init() Funktion.
+    init() {
+        super.initMesh();
+        this.initOrbit();
     }
 
     // Überschreiben von isInitialized(), hier wird die Kondition, dass label definiert sein muss, ausgelassen.

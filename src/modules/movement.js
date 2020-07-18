@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as INPUT from './input.js';
-import {camera, canvas, menu, scale} from './../index.js';
+import {camera, canvas, menu} from './../index.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 

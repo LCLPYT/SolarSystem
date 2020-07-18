@@ -5,10 +5,11 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as PLANETS from './modules/planets.js';
 import * as INPUT from './modules/input.js';
 import * as MOVEMENT from './modules/movement.js'
+import * as CONSTANTS from './modules/constants.js';
 
+
+console.log(CONSTANTS.scale);
 /* Globale Variablen */
-
-export const scale = 0.000001;
 
 // Die vier Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
 export let scene, camera, renderer, cssRenderer;
