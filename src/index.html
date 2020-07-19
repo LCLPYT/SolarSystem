@@ -13,14 +13,22 @@
           <br>
           Umsehen: Maus<br>
           <br>
-          Geschwindigkeit regulieren: Mausrad
+          Geschwindigkeit regulieren: Mausrad (Scrollen)
         </p>
       </div>
     </div>
-    <div id="movementModeToggler" class="disable-select">
+    <div id="movementModeToggler" class="disable-select" hidden>
       Bewegungsmodus<br>
       ändern
     </div>
     <script src="bundle.js"></script>
+
+    <!-- Wird ausgeführt, sobald three.js usw. geladen wurde. -->
+    <script>
+      // Selbst aufrufende Funktion
+      (function() {
+        document.getElementById("movementModeToggler").hidden = false; // Bewegungsmodusknopf anzeigen
+      })();
+    </script>
   </body>
 </html>

@@ -5,10 +5,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as PLANETS from './modules/planets.js';
 import * as INPUT from './modules/input.js';
 import * as MOVEMENT from './modules/movement.js'
-import * as CONSTANTS from './modules/constants.js';
 
-
-console.log(CONSTANTS.scale);
 /* Globale Variablen */
 
 // Die vier Basisvariablen vom Three.js renderer. (weiter beschrieben in init())
@@ -68,6 +65,10 @@ function init() {
   //Hinzufügen des HTML (div) Objektes zur HTML-Seite
   document.body.appendChild(cssRenderer.domElement);
 
+  // Hinzufügen von Umgebungslicht
+  let ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Farbe, Intensität
+  scene.add(ambientLight);
+
   /** Hinzufügen Sonne **/
   PLANETS.SUN.addToScene(scene);
 
@@ -106,9 +107,12 @@ function animate(now) {
   */
   requestAnimationFrame(animate);
 
+  if(now === undefined) return; // In der ersten Iteration abbrechen, die nicht durch requestAnimationFrame() aufgerufen wurde.
+
   const deltaTime = (now - lastAnimateTimestamp) / 1000; // Zeit die seit dem letzten Aufruf von animate() vergangen ist, in Sekunden.
   lastAnimateTimestamp = now;
 
+  PLANETS.tick(deltaTime);
   MOVEMENT.tick(deltaTime);
 
   // Mit dieser Anweisung bildet der Renderer die Szene auf der Leinwand ab.

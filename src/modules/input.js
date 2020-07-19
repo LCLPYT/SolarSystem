@@ -51,7 +51,10 @@ export function registerInputListeners() {
             let sign = Math.sign(e.deltaY) * -1;
 
             // Ausrechnen der neuen Bewegungsgeschwindigkeit.
-            let newSpeed = UTILS.clamp(MOVEMENT.movementSpeed + sign * 0.5, 0, 20);
+            let newSpeed = UTILS.clamp(
+                  MOVEMENT.movementSpeed + sign * (0.05 * MOVEMENT.movementSpeedBase), // Ausgerechneter Wert
+                  0, // Minimum
+                  MOVEMENT.movementSpeedBase * 2); // Maximum
 
             // Setzen der neuen Bewegungsgeschwindigkeit.
             MOVEMENT.setMovementSpeed(newSpeed);

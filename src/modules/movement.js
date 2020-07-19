@@ -5,7 +5,7 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Bewegungsgeschwindigkeiten der Kamera. In Einheiten / Sekunde.
-export let movementSpeed = 10;
+export let movementSpeedBase = 600, movementSpeed = movementSpeedBase;
 // Die Blickrichtung als Vektor
 let view = new THREE.Vector3();
 // Bewegung als Vektor
@@ -15,11 +15,11 @@ const AXIS_Y = new THREE.Vector3(0, 1, 0);
 
 // Eine Aufzählung aller Bewegungsarten
 export const movementModes = {
-  ORIBIT: "orbit",
+  ORBIT: "orbit",
   POINTERLOCK: "pointerlock"
 }
 // Die momentane Bewegungsart. Standard ist OrbitControls.
-export let movementMode = movementModes.ORIBIT;
+export let movementMode = movementModes.ORBIT;
 
 // Die Bewegungskontrollen-Instanz
 export let controls;
@@ -29,7 +29,7 @@ export let controls;
  */
 export function bindControls() {
   // Festlegen der Controls
-  if(movementMode === movementModes.ORIBIT) {
+  if(movementMode === movementModes.ORBIT) {
     controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true; // Macht die ganze Bewegung flüssiger
   }
@@ -49,8 +49,8 @@ export function bindControls() {
  * Diese Funktion wechselt den Bewegungsmodus.
  */
 export function toggleMovementMode() {
-  let wasOrbit = movementMode === movementModes.ORIBIT;
-  movementMode = wasOrbit ? movementModes.POINTERLOCK : movementModes.ORIBIT;
+  let wasOrbit = movementMode === movementModes.ORBIT;
+  movementMode = wasOrbit ? movementModes.POINTERLOCK : movementModes.ORBIT;
 
   if(wasOrbit) {
     controls.dispose(); // Entfernen aller Event-Listener von OrbitControls.
@@ -72,7 +72,7 @@ export function toggleMovementMode() {
 export function tick(deltaTime) {
   movement.set(0, 0, 0); //Bewegungsvektor zurücksetzen
 
-  if(movementMode === movementModes.ORIBIT) {
+  if(movementMode === movementModes.ORBIT) {
     controls.update();
     return;
   }
@@ -80,7 +80,8 @@ export function tick(deltaTime) {
   if(movementMode !== movementModes.POINTERLOCK || !controls.isLocked) return; // Abbrechen, wenn das Menu gezeigt wird.
 
   let step = view.clone();
-  step.multiplyScalar(movementSpeed * deltaTime);
+  let tickSpeed = movementSpeed * deltaTime;
+  step.multiplyScalar(tickSpeed);
 
   // Vor / Zurück
   if (isKeyDown(INPUT.MOVE_FORWARDS) && !isKeyDown(INPUT.MOVE_BACKWARDS)) movement.add(step); // Die Blickrichtung entspricht der Richtung vorwärts und ist auch schon skaliert, daher kann der Vektor einfach addiert werden.
@@ -89,8 +90,8 @@ export function tick(deltaTime) {
   if (isKeyDown(INPUT.MOVE_LEFT) && !isKeyDown(INPUT.MOVE_RIGHT)) movement.add(step.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // Gleiches Prinzip, wie für Vor / Zurück, nur dass der Bewegungsrichtungsvektor 90° an der y-Achse rotiert ist.
   else if (isKeyDown(INPUT.MOVE_RIGHT) && !isKeyDown(INPUT.MOVE_LEFT)) movement.sub(step.clone().applyAxisAngle(AXIS_Y, Math.PI / 2)); // **
   // Oben / Unten
-  if (isKeyDown(INPUT.MOVE_UP) && !isKeyDown(INPUT.MOVE_DOWN)) movement.setComponent(1, movementSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
-  else if (isKeyDown(INPUT.MOVE_DOWN) && !isKeyDown(INPUT.MOVE_UP)) movement.setComponent(1, -movementSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
+  if (isKeyDown(INPUT.MOVE_UP) && !isKeyDown(INPUT.MOVE_DOWN)) movement.setComponent(1, tickSpeed); // Die y-Komponente des Bewegungsvektors (index 1) auf die Bewegungsgeschwindigkeit setzen.
+  else if (isKeyDown(INPUT.MOVE_DOWN) && !isKeyDown(INPUT.MOVE_UP)) movement.setComponent(1, -tickSpeed); // Das gleiche, nur mit der negativen Bewegungsgeschwindigkeit
 
   camera.position.add(movement); // Die Bewegung mithilfe von Vektoraddition auf die position addieren.
 }
@@ -118,6 +119,5 @@ export function updateViewDirection() {
  * @param {number} speed Die Bewegungsgeschwindigkeit in Einheiten/Sekunde
  */
 export function setMovementSpeed(speed) {
-  console.log(speed);
   movementSpeed = Math.max(0, speed); // movementSpeed kann hiermit nicht kleiner als 0 werden.
 }
