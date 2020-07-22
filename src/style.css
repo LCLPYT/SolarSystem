@@ -31,6 +31,13 @@ canvas {
     position: absolute;
     margin-top: 10px;
     margin-left: 10px;
+}
+#movementSpeedChanger {
+    position: absolute;
+    margin-top: 80px;
+    margin-left: 10px;
+}
+.ui-button {
     border: 1px solid white;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.75);
@@ -46,4 +53,41 @@ canvas {
    -khtml-user-select: none; /* Konqueror HTML */
    -moz-user-select: none; /* Firefox */
    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+#input-container {
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}
+
+#input-field {
+    width: 97%;
+    margin-top: .25%;
+    background-color: gray;
+    color: white;
+    border: 2px steelblue solid;
+    height: 20px;
+    padding: 10px;
+}
+
+#input-list {
+    width: 60%;
+    padding: 10px;
+    background-color: darkslategray;
+    text-align: center;
+    list-style: none;
+}
+
+.hide-recursive {
+    display: none;
+}
+
+.input-suggestion {
+    text-align: start;
+    color: white;
+    padding: 5px;
+    font-size: 13px;
 }
