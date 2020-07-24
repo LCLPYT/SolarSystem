@@ -143,8 +143,6 @@ export class Star extends Planet {
         this.initMesh();
         super.initLabel();
         this.initLightSource();
-
-        super.registerPlanet();
     }
 
     // Überschreiben der initMesh() Funktion
