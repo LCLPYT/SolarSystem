@@ -218,6 +218,15 @@ export class Moon extends Planet {
         this.initLabel();
     }
 
+    // Überschreiben von addToScene(scene)
+    addToScene(scene) {
+        if (this.mesh === undefined) this.init();
+
+        this.registerPlanet();
+        
+        return this;
+    }
+
     // Überschreiben von tick(deltaTime)
     tick(deltaTime) {
         if(this.angularSpeed === undefined) {
