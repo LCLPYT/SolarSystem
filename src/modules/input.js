@@ -1,7 +1,7 @@
 import * as MOVEMENT from "./movement";
 import * as UTILS from "./utils";
 import { menu } from "..";
-import * as COMMANDS from "./commands";
+import * as PALETTE from './palette';
 
 // Die Tastennummern für bestimmte Aktionen im Programm.
 export const MOVE_FORWARDS = 87, // 'w'
@@ -32,24 +32,7 @@ export function registerInputListeners() {
       document.addEventListener("keydown", e => {
             if (!pressedKeys.includes(e.which)) pressedKeys.push(e.which);
 
-            // Direkte Aufrufe
-            switch (e.which) {
-                  case 27: // ESC
-                        onEscape();
-                        break;
-                  case 13: // Enter
-                        onEnter();
-                        break;
-                  case 40: // ArrowDown
-                        onArrow("down");
-                        break;
-                  case 38: // ArrowUp
-                        onArrow("up");
-                        break;
-            
-                  default:
-                        break;
-            }
+            PALETTE.onKeyDown(e);
       }, false);
 
       /*
@@ -98,143 +81,8 @@ export function registerInputListeners() {
       }, false);
 
       document.getElementById("movementSpeedChanger").addEventListener("click", e => {
-            showTextInput("SetMovementSpeed ");
+            PALETTE.show("SetMovementSpeed ");
       });
-}
-
-function showTextInput(prepend) {
-      if(MOVEMENT.movementMode === MOVEMENT.movementModes.POINTERLOCK) MOVEMENT.controls.unlock(); // Pointer Lock entsperren. -> Steuerung der Kamera sperren.
-
-      Array.from(document.getElementsByClassName("input-group")).forEach(element => element.hidden = false);
-      let textField = document.getElementById("input-field");
-      textField.value = prepend;
-      textField.focus(); // Text-Feld fokussieren, damit der Benutzer direkt anfangen kann zu schreiben.
-      textField.setSelectionRange(textField.value.length, textField.value.length); // Cursor an das Ende des Textes bewegen.
-      suggest();
-}
-
-function hideTextInput() {
-      Array.from(document.getElementsByClassName("input-group")).forEach(element => element.hidden = true);
-      let textField = document.getElementById("input-field");
-      textField.blur(); // Den Fokus vom Text-Feld nehmen.
-
-      hoveredSuggestion = null;
-      selectedNode = null;
-      selectedIndex = -1;
-}
-
-let hoveredSuggestion = null;
-let selectedNode = null;
-let selectedIndex = -1;
-
-function suggest() {
-      let suggestions = COMMANDS.suggest(document.getElementById("input-field").value);
-      let inputList = document.getElementById("input-list");
-
-      Array.from(inputList.children).forEach(node => {
-            if(!node.classList.contains("persistent")) inputList.removeChild(node);
-      });
-
-      suggestions.forEach(suggestion => {
-            let li = document.createElement("li");
-            li.classList.add("input-group");
-      
-            let div = document.createElement("div");
-            div.suggestion = suggestion;
-            div.classList.add("input-suggestion");
-            div.classList.add("input-group");
-            div.classList.add("disable-select");
-            div.addEventListener("mouseover", () => {
-                  selectDiv(div);
-                  hoveredSuggestion = suggestion;
-            });
-            div.addEventListener("mouseout", () => {
-                  unselectDiv(div);
-                  hoveredSuggestion = null;
-            });
-            div.addEventListener("click", () => {
-                  useSuggestion(div);
-            });
-
-            let text = document.createTextNode(suggestion);
-
-            div.appendChild(text);
-            li.appendChild(div);
-            inputList.appendChild(li);
-      });
-}
-
-function useSuggestion(div) {
-      unselectDiv(div);
-
-      let inputField = document.getElementById("input-field");
-      inputField.value += `${div.suggestion} `;
-      unselectDiv(div);
-      inputField.focus();
-      suggest();
-}
-
-function selectDiv(div) {
-      div.prevBGColor = div.style.backgroundColor;
-      div.style.backgroundColor = "rgba(127, 127, 127, 0.5)";
-      selectedNode = div;
-}
-
-function unselectDiv(div) {
-      div.style.backgroundColor = div.prevBGColor;
-      selectedNode = null;
-}
-
-/**
- * Wird aufgerufen, sobald der Benutzer die ESC-Taste drückt.
- */
-function onEscape() {
-      let textField = document.getElementById("input-field");
-      if(document.activeElement === textField) hideTextInput();
-}
-
-/**
- * Wird aufgerufen, sobald der Benutzer die Enter-Taste drückt.
- */
-function onEnter() {
-      let textField = document.getElementById("input-field");
-      if(selectedNode !== null) {
-            useSuggestion(selectedNode);
-      }
-      else if(document.activeElement === textField) { // Wenn das Eingabe-Feld fokussiert ist.
-            let success = COMMANDS.execute(textField.value);
-      } else { // Wenn das Eingabe-Feld keinen Fokus hat.
-            showTextInput(""); // Eingabe-Feld zeigen.
-      }
-}
-
-/**
- * Wird aufgerufen, sobald der Benutzer eine Pfeiltaste drückt.
- * 
- * @param {string} which Welche Pfeiltaste gedrückt wurde ("up", "down")
- */
-function onArrow(which) {
-      if(document.getElementById("input-field").hidden) return;
-
-      let inputList = document.getElementById("input-list");
-      let childCount = inputList.children.length;
-
-      if(which === "down") {
-            if(selectedIndex === -1 || selectedIndex >= childCount - 1) selectedIndex = 2;
-            else if(selectedIndex < childCount - 1) selectedIndex++;
-
-            let next = inputList.children.item(selectedIndex);
-            if(selectedNode !== null) unselectDiv(selectedNode);
-            selectDiv(next.children.item(0));
-      }
-      else if(which === "up") {
-            if(selectedIndex === -1 || selectedIndex <= 2) selectedIndex = childCount - 1;
-            else selectedIndex--;
-
-            let next = inputList.children.item(selectedIndex);
-            if(selectedNode !== null) unselectDiv(selectedNode);
-            selectDiv(next.children.item(0));
-      }
 }
 
 /**
@@ -253,16 +101,3 @@ export function isKeyDown(keyCode) {
 export function unpressAllKeys() {
       pressedKeys.length = 0;
 }
-
-// initialisieren des Input-Feldes
-const inputField = document.getElementById("input-field");
-
-// Hinzufügen eines Listeners, welcher aufgerufen wird, sobald der Benutzer den Fokus aus dem Text-Feld nimmt.
-inputField.addEventListener("focusout", () => {
-      if(hoveredSuggestion === null) hideTextInput();
-      else hoveredSuggestion = null;
-});
-inputField.addEventListener("input", () => suggest());
-inputField.addEventListener("cut", () => suggest());
-inputField.addEventListener("copy", () => suggest());
-inputField.addEventListener("paste", () => suggest());
