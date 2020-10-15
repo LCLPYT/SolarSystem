@@ -4,7 +4,6 @@
   "description": "A model of the solar system.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack",
     "build": "webpack --config prod.config.js",
     "start": "webpack-dev-server --open"
@@ -16,7 +15,7 @@
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
     "style-loader": "^1.2.1",
-    "webpack": "^4.43.0",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
