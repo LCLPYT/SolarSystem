@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umlaufbahnen</title>
+</head>
+<body>
+    <canvas id="canvas" width="1280" height="720" style="border: 1px solid black; display: block; margin: 0 auto;"></canvas>
+    <div style="padding: 10px;">
+        <button id="zoomIn">Vergrößern</button>
+        <button id="zoomOut">Verkleinern</button>
+        <div style="margin-top: 10px;">
+            <label for="timeScaleInput">Eine Sekunde Echtzeit entspricht</label>
+            <input type="number" id="timeScaleInput" placeholder="Sekunden pro Sekunde">
+            Minuten in der Simulation
+        </div>
+    </div>
+
+    <script type="module" src="orbit_all.js"></script>
+</body>
+</html>
