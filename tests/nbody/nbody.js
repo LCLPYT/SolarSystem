@@ -1,11 +1,15 @@
-import { canvas, ctx, grav, secondMultiplier } from "../utils/constants.js";
+import { canvas, ctx, secondMultiplier } from "../utils/constants.js";
 import * as PLANETS from "../utils/planets.js";
-import { accel, x, y } from "../utils/utils.js";
+import { accel } from "../utils/utils.js";
 
 import '../utils/controls.js';
 
 let lastRender = undefined;
 let paused = false;
+
+/**
+ * @param {number} timestamp Momentane Zeit in ms.
+ */
 function render(timestamp) {
     if(paused) return;
 

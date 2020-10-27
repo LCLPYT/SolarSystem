@@ -1,5 +1,7 @@
-export const canvas = document.getElementById('canvas');
-export const ctx = canvas.getContext('2d');
+/** @type {HTMLCanvasElement} */
+export const canvas = (document.getElementById('canvas'));
+/** @type {CanvasRenderingContext2D} */
+export const ctx = (canvas.getContext('2d'));
 
 export const grav = 6.67430E-11; // m^3*km^-2*s^-1
 

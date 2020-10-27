@@ -1,9 +1,9 @@
 import { canvas, grav, auPerPixel } from './constants.js';
 
 /**
- * @param {Vector} p1 Anziehender Planet
- * @param {Vector} p2 Angezogener Planet
- * @returns {Vector} Die Beschleunigung, die der angezogene Planet erfährt. In m/s^2
+ * @param {import('./planets.js').Planet} p1 Anziehender Planet
+ * @param {import('./planets.js').Planet} p2 Angezogener Planet
+ * @returns {import('./vector.js').Vector} Die Beschleunigung, die der angezogene Planet erfährt. In m/s^2
  */
 function accel(p1, p2) {
     let vec = p2.pos.sub(p1.pos); // Verschiebungsvektor in AE

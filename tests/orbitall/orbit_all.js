@@ -1,6 +1,6 @@
-import { canvas, ctx, grav, secondMultiplier } from "../utils/constants.js";
+import { canvas, ctx, secondMultiplier } from "../utils/constants.js";
 import * as PLANETS from "../utils/planets.js";
-import { accel, x, y } from "../utils/utils.js";
+import { accel } from "../utils/utils.js";
 
 import '../utils/controls.js';
 

@@ -100,4 +100,4 @@ let pluto = new Planet(
 
 let list = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
 
-export { sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, list };
+export { Planet, sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, list };

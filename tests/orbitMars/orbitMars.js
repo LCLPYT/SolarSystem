@@ -44,8 +44,10 @@ class Vector {
 
 }
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+/** @type {HTMLCanvasElement} */
+const canvas = (document.getElementById('canvas'));
+/** @type {CanvasRenderingContext2D} */
+const ctx = (canvas.getContext('2d'));
 const width = canvas.getBoundingClientRect().width, height = canvas.getBoundingClientRect().height;
 const auPerPixel = 4 / 500; // 2 AU pro 500 pixel
 const grav = 6.67430E-11; // m^3*km^-2*s^-1
@@ -55,8 +57,9 @@ class Planet {
     /**
      * @param {Vector} pos Positionsvektor, in AE, vom Mittelpunkt der Sonne
      * @param {Vector} vel Geschwindigkeitsvektor, in AE/d
-     * @param {*} mass Masse in kg
+     * @param {number} mass Masse in kg
      * @param {*} color CSS style, z.B. 'blue'
+     * @param {number} size Radius der dargestellten Kugel auf der Leinwand.
      */
     constructor(pos, vel, mass, color, size) {
         this.pos = pos;
@@ -115,8 +118,8 @@ function attract(p1, p2) {
 }
 
 /**
- * @param {Vector} p1 Anziehender Planet
- * @param {Vector} p2 Angezogener Planet
+ * @param {Planet} p1 Anziehender Planet
+ * @param {Planet} p2 Angezogener Planet
  * @returns {Vector} Die Beschleunigung, die der angezogene Planet erfährt. In m/s^2
  */
 function accel(p1, p2) {
