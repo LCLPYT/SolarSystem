@@ -5,46 +5,6 @@
     <title>Sonnensystem</title>
   </head>
   <body>
-    <div id="menu" hidden>
-      <div class="centerHV">
-        <h1 id="title">Klicken, um anzufangen</h1>
-        <p>
-          Bewegung: W/A/S/D/Space/Shift<br>
-          <br>
-          Umsehen: Maus<br>
-          <br>
-          Geschwindigkeit regulieren: Mausrad (Scrollen)
-        </p>
-      </div>
-    </div>
-    <div id="movementModeToggler" class="ui-button disable-select show-when-ready" hidden>
-      Bewegungsmodus<br>
-      ändern
-    </div>
-    <div id="movementSpeedChanger" class="ui-button disable-select show-when-ready" hidden>
-      Bewegungs-<br>
-      geschwindigkeit
-    </div>
-
-    <div id="input-container" class="input-group" hidden>
-      <ul id="input-list" class="input-group" hidden>
-        <li class="input-group persistent">
-          <input type="text" id="input-field" placeholder="Kommando..." class="input-group" hidden></input>
-        </li>
-        <br class="persistent">
-      </ul>
-    </div>
-
-    </div>
     <script src="bundle.js"></script>
-
-    <!-- Wird ausgeführt, sobald three.js usw. geladen wurde. -->
-    <script>
-      // Selbst aufrufende Funktion
-      (function() {
-        Array.from(document.getElementsByClassName("show-when-ready"))
-          .forEach(element => element.hidden = false); // Versteckte Elemente mit der Klasse 'show-when-ready' anzeigen.
-      })();
-    </script>
   </body>
 </html>
