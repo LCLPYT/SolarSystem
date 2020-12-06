@@ -1,6 +1,6 @@
 import { CircleGeometry, LineBasicMaterial, LineLoop, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { AU_FACTOR } from "./Units";
+import { AU_FACTOR } from "./Constants";
 import { scale } from "./Values";
 import { Vector } from "./Vector";
 
