@@ -3,6 +3,7 @@ import * as PLANETS from "../utils/planets.js";
 import { accel } from "../utils/utils.js";
 
 import '../utils/controls.js';
+import { Vector } from "../utils/vector.js";
 
 let lastRender = undefined;
 let paused = false;
@@ -28,21 +29,27 @@ function render(timestamp) {
 
     ctx.clearRect(0, 0, canvas.getBoundingClientRect().width, canvas.getBoundingClientRect().height);
 
-    PLANETS.list.forEach(p1 => {
-        PLANETS.list.forEach(p2 => {
-            if(p1 === p2) return;
+    PLANETS.list.forEach(attracted => {
+        let totalAttractionAcceleration = new Vector(0, 0, 0);
 
-            let acceleration = accel(p1, p2);
+        PLANETS.list.forEach(attractor => {
+            if(attracted === attractor) return;
 
-            // v = a * t
-            // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
-            let vel = acceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
-    
-            p1.vel = p1.vel.add(vel);
-            p1.pos = p1.pos.add(p1.vel.multScalar(dt * secondMultiplier / 86400));
-            
-            planet.draw();
+            let acceleration = accel(attractor, attracted);
+
+            totalAttractionAcceleration = totalAttractionAcceleration.add(acceleration);
         });
+
+        // v = a * t
+        // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
+        let vel = totalAttractionAcceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
+        attracted.vel = attracted.vel.add(vel);
+    });
+
+    PLANETS.list.forEach(planet => {
+        // s = s0 + v * t
+        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier / 86400));
+        planet.draw();
     });
 }
 
