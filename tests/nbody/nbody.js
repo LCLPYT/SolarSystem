@@ -28,22 +28,21 @@ function render(timestamp) {
 
     ctx.clearRect(0, 0, canvas.getBoundingClientRect().width, canvas.getBoundingClientRect().height);
 
-    PLANETS.list.forEach(planet => {
-        if(planet === PLANETS.sun) {
+    PLANETS.list.forEach(p1 => {
+        PLANETS.list.forEach(p2 => {
+            if(p1 === p2) return;
+
+            let acceleration = accel(p1, p2);
+
+            // v = a * t
+            // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
+            let vel = acceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
+    
+            p1.vel = p1.vel.add(vel);
+            p1.pos = p1.pos.add(p1.vel.multScalar(dt * secondMultiplier / 86400));
+            
             planet.draw();
-            return;
-        }
-
-        let acceleration = accel(PLANETS.sun, planet);
-
-        // v = a * t
-        // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
-        let vel = acceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
-
-        planet.vel = planet.vel.add(vel);
-        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier / 86400));
-        
-        planet.draw()
+        });
     });
 }
 
