@@ -1,5 +1,6 @@
 import { CircleGeometry, LineBasicMaterial, LineLoop, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { AU_FACTOR } from "./Units";
 import { scale } from "./Values";
 import { Vector } from "./Vector";
 
@@ -41,7 +42,7 @@ export class Body {
 
     protected initMesh() {
         let geometry = new SphereGeometry(
-            this.radius, // * scale,
+            this.radius * 1E+3 * scale,
             64, // Anzahl der horizontalen Segmente der Kugel
             64 // Anzahl der vertikalen Segmente der Kugel
         );
@@ -66,8 +67,8 @@ export class Body {
         this.mesh.add(this.label);
     }
 
-    updatePosition() {
-        let scaled = this.position.multScalar(149597870700).divScalar(1000).multScalar(scale);
+    protected updatePosition() {
+        let scaled = this.position.multScalar(AU_FACTOR).multScalar(scale);
         this.mesh.position.set(scaled.x, scaled.y, scaled.z);
     }
 
