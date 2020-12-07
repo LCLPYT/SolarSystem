@@ -8,9 +8,9 @@ import { canvas, grav, auPerPixel } from './constants.js';
 function accel(p1, p2) {
     let vec = p2.pos.sub(p1.pos); // Verschiebungsvektor in AE
     vec = vec.multScalar(149597870700); // AE zu m
-    let dis = vec.length(); // in m
+    let disSq = vec.lengthSquared(); // in m^2
 
-    let scalar = -grav * p1.mass / (dis * dis);
+    let scalar = -grav * p1.mass / disSq;
     return vec.normalize().multScalar(scalar);
 }
 

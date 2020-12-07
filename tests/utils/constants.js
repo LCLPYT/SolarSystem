@@ -1,7 +1,7 @@
 /** @type {HTMLCanvasElement} */
 export const canvas = (document.getElementById('canvas'));
 /** @type {CanvasRenderingContext2D} */
-export const ctx = (canvas.getContext('2d'));
+export const ctx = canvas != null ? (canvas.getContext('2d')) : null;
 
 export const grav = 6.67430E-11; // m^3*kg^-1*s^-2
 
