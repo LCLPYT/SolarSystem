@@ -42,4 +42,7 @@ console.log("Distance: " + distance + " AU (" + (distance * 149597870700) + " m)
 /*
 - https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation
 - https://en.wikipedia.org/wiki/Gravitational_acceleration
+- https://www.leifiphysik.de/mechanik/gravitationsgesetz-und-feld/ausblick/numerische-behandlung-von-satellitenbahnen
+- http://www.stargazing.net/kepler/ellipse.html
+- 
 */
