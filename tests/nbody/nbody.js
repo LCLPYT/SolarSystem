@@ -41,14 +41,14 @@ function render(timestamp) {
         });
 
         // v = a * t
-        // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
-        let vel = totalAttractionAcceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
+        // v [m/s] = a [m/s^2] * dt [s]
+        let vel = totalAttractionAcceleration.multScalar(dt * secondMultiplier);
         attracted.vel = attracted.vel.add(vel);
     });
 
     PLANETS.list.forEach(planet => {
         // s = s0 + v * t
-        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier / 86400));
+        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier));
         planet.draw();
     });
 }

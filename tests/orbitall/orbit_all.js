@@ -33,11 +33,11 @@ function render(timestamp) {
         let acceleration = accel(PLANETS.sun, planet);
 
         // v = a * t
-        // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
-        let vel = acceleration.divScalar(149597870700).multScalar(dt * secondMultiplier).multScalar(86400);
+        // v [m/s] = a [m/s^2] * dt [s]
+        let vel = acceleration.multScalar(dt * secondMultiplier);
 
         planet.vel = planet.vel.add(vel);
-        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier / 86400));
+        planet.pos = planet.pos.add(planet.vel.multScalar(dt * secondMultiplier));
         
         planet.draw()
     });

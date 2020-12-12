@@ -12,8 +12,8 @@ class Planet {
      * @param {string} name Name
      */
     constructor(pos, vel, mass, color, size, name) {
-        this.pos = pos;
-        this.vel = vel;
+        this.pos = pos.multScalar(149597870700); // AE zu m
+        this.vel = vel.multScalar(149597870700 / 86400); // AE/d zu m/s
         this.mass = mass;
         this.color = color;
         this.size = size;
@@ -22,7 +22,7 @@ class Planet {
 
     draw() {
         ctx.beginPath();
-        ctx.arc(x(auToPixel(this.pos.x)), y(auToPixel(this.pos.y)), this.size, 0, Math.PI * 2);
+        ctx.arc(x(auToPixel(this.pos.x / 149597870700)), y(auToPixel(this.pos.y / 149597870700)), this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
     }
