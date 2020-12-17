@@ -18,12 +18,12 @@ function accel(p1, p2) {
  * @param {Number} x Die Raumkoordinate.
  * @returns {Number} Die Leinwandkoordinate.
  */
-function x(x) {
-    return canvas.getBoundingClientRect().width / 2 + x; 
+function x(x, canv = canvas) {
+    return canv.getBoundingClientRect().width / 2 + x; 
 }
 
-function y(y) {
-    return canvas.getBoundingClientRect().height / 2 + y;
+function y(y, canv = canvas) {
+    return canv.getBoundingClientRect().height / 2 + y;
 }
 
 function auToPixel(au) {

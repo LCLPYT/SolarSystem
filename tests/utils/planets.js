@@ -1,4 +1,4 @@
-import { ctx } from './constants.js';
+import { canvas, ctx as CTX } from './constants.js';
 import { x, y, auToPixel } from './utils.js';
 import { Vector } from './vector.js';
 
@@ -20,9 +20,9 @@ class Planet {
         this.name = name;
     }
 
-    draw() {
+    draw(ctx = CTX, canv = canvas) {
         ctx.beginPath();
-        ctx.arc(x(auToPixel(this.pos.x / 149597870700)), y(auToPixel(this.pos.y / 149597870700)), this.size, 0, Math.PI * 2);
+        ctx.arc(x(auToPixel(this.pos.x / 149597870700), canv), y(auToPixel(this.pos.y / 149597870700), canv), this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
     }

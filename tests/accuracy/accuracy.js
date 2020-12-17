@@ -1,43 +1,69 @@
-import { canvas, ctx, secondMultiplier } from "../utils/constants.js";
+import { setAuPerPixel } from "../utils/constants.js";
 import * as PLANETS from "../utils/planets.js";
 import { accel } from "../utils/utils.js";
 
-import '../utils/controls.js';
 import { Vector } from "../utils/vector.js";
 
-const dt = 1;
-for(let t = 0; t < 365 * 24 * 60 * 60; t++) {
-    if(t % (60*60*24) === 0) console.log(t / (365 * 24 * 60 * 60));
+const EARTH_REAL_2021_09_01 = new Vector(9.389956708783105E-01, -3.700412702037588E-01, 1.321273146769900E-05).multScalar(149597870700);
 
-    PLANETS.list.forEach(attracted => {
-        let totalAttractionAcceleration = new Vector(0, 0, 0);
+console.log(EARTH_REAL_2021_09_01);
 
-        PLANETS.list.forEach(attractor => {
-            if(attracted === attractor) return;
+test(365 * 24 * 60 * 60, 60, true);
+test(365.2422 * 24 * 60 * 60, 60, false);
 
-            let acceleration = accel(attractor, attracted);
+function test(duration, dt, print = false) {
+    let canvas = null;
+    let ctx = null;
+    
+    const attracted = PLANETS.earth;
+    const startPos = attracted.pos;
+    const startVel = attracted.vel;
 
-            totalAttractionAcceleration = totalAttractionAcceleration.add(acceleration);
-        });
+    if(print) {
+        let title = document.createElement("h2");
+        title.appendChild(document.createTextNode(`${attracted.name}'s orbit arround the sun (${duration} s)`));
 
-        // v = a * t
-        // v [AE/d] = a [m/s^2] / 149597870700 * dt [s] * 86400
-        let vel = totalAttractionAcceleration.divScalar(149597870700).multScalar(dt).multScalar(86400);
-        attracted.vel = attracted.vel.add(vel);
-    });
+        canvas = document.createElement("canvas");
+        canvas.height = canvas.width = 800;
+        ctx = canvas.getContext("2d");
 
-    PLANETS.list.forEach(planet => {
-        // s = s0 + v * t
-        planet.pos = planet.pos.add(planet.vel.multScalar(dt / 86400));
-    });
+        document.body.appendChild(title);
+        document.body.appendChild(canvas);
+
+        setAuPerPixel(1 / 200);
+
+        PLANETS.sun.draw(ctx, canvas);
+    }
+
+    let t;
+    
+    console.log(`Simulating ${attracted.name}'s orbit arround the sun for ${duration} seconds...`);
+    
+    for (t = 0; t < duration; t += dt) {
+        // a(t) = -G * M * r(t) * 1 / mag(r(t))^3
+        let acceleration = accel(PLANETS.sun, attracted);
+        
+        // t=0: v(dt / 2)    = v(0) + a(t) * dt / 2
+        // else: v(t + dt / 2) = v(t - dt / 2) + a(t) * dt
+        if(t === 0) attracted.vel = attracted.vel.add(acceleration.multScalar(dt / 2));
+        else attracted.vel = attracted.vel.add(acceleration.multScalar(dt));
+    
+        // r(t + dt) = r(t) + v(t + dt / 2) * dt
+        attracted.pos = attracted.pos.add(attracted.vel.multScalar(dt));
+
+        if(print) attracted.draw(ctx, canvas);
+    }
+
+    console.log(attracted.pos);
+    console.log(`Done. Simulation time now: ${t}`);
+    console.log(`Distance to real position: ${EARTH_REAL_2021_09_01.sub(attracted.pos).length()} m`);
+    console.log(`Distance to start position: ${startPos.sub(attracted.pos).length()} m`);
+
+    console.log("");
+
+    attracted.pos = startPos;
+    attracted.vel = startVel;
 }
-let after = PLANETS.earth.pos;
-let real = new Vector(9.389956708783105E-01, -3.700412702037588E-01, 1.321273146769900E-05);
-console.log("calculated position: ", after);
-console.log("jpl horizons calulated position: ", real);
-
-let distance = real.sub(after).length();
-console.log("Distance: " + distance + " AU (" + (distance * 149597870700) + " m)");
 
 /*
 - https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation
