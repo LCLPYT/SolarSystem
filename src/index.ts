@@ -5,6 +5,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { bodies, earth, jupiter, mars, mercury, neptune, pluto, saturn, sun, uranus, venus } from './ts/Bodies';
 import { scale } from './ts/Values';
 import { Vector3 } from 'three';
+import { tick } from './ts/Ticker';
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -63,6 +64,7 @@ function animate(now: number) {
         return;
     }
 
+    tick(now);
 
     renderer.render(scene, camera);
     cssRenderer.render(scene, camera);

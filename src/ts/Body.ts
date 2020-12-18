@@ -1,6 +1,6 @@
 import { CircleGeometry, LineBasicMaterial, LineLoop, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { AU_FACTOR } from "./Constants";
+import { AU_IN_M, DAY_IN_SECONDS, G } from "./Constants";
 import { scale } from "./Values";
 import { Vector } from "./Vector";
 
@@ -13,11 +13,13 @@ export class Body {
     readonly color: number;
     /** Die Masse des Körpers. In kg */
     readonly mass: number;
-    /** Der Radius des Körpers. In km */
+    /** Der Radius des Körpers. In m */
     readonly radius: number;
-    /** Die Position des Körpers, relativ zur Sonne. In AE  */
+    /** Die Masse des Körpers mal der Gravitationskonstante. In m^3*s^-2 */
+    readonly g_times_m: number;
+    /** Die Position des Körpers, relativ zur Sonne. In m */
     position: Vector;
-    /** Die Geschwindigkeit des Körpers. In AE/d */
+    /** Die Geschwindigkeit des Körpers. In m/s */
     velocity: Vector;
     mesh: Mesh<SphereGeometry, MeshStandardMaterial>;
     label: CSS2DObject;
@@ -25,10 +27,11 @@ export class Body {
     constructor(name: string, color: number, position: Vector, velocity: Vector, mass: number, radius: number) {
         this.name = name;
         this.color = color;
-        this.position = position;
-        this.velocity = velocity;
+        this.position = position.multScalar(AU_IN_M);
+        this.velocity = velocity.multScalar(AU_IN_M / DAY_IN_SECONDS);
         this.mass = mass;
-        this.radius = radius;
+        this.radius = radius * 1000;
+        this.g_times_m = G * this.mass;
     }
 
     init() {
@@ -42,7 +45,7 @@ export class Body {
 
     protected initMesh() {
         let geometry = new SphereGeometry(
-            this.radius * 1E+3 * scale,
+            this.radius * scale,
             64, // Anzahl der horizontalen Segmente der Kugel
             64 // Anzahl der vertikalen Segmente der Kugel
         );
@@ -68,7 +71,7 @@ export class Body {
     }
 
     protected updatePosition() {
-        let scaled = this.position.multScalar(AU_FACTOR).multScalar(scale);
+        let scaled = this.position.multScalar(scale);
         this.mesh.position.set(scaled.x, scaled.y, scaled.z);
     }
 
