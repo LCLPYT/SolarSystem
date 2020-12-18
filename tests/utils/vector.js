@@ -47,3 +47,5 @@ export class Vector {
     }
 
 }
+
+export const zero = new Vector(0, 0, 0);

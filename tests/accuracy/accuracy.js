@@ -6,9 +6,8 @@ import { Vector } from "../utils/vector.js";
 
 const EARTH_REAL_2021_09_01 = new Vector(9.389956708783105E-01, -3.700412702037588E-01, 1.321273146769900E-05).multScalar(149597870700);
 
-console.log(EARTH_REAL_2021_09_01);
-
 test(365 * 24 * 60 * 60, 60, true);
+test(0.5 * 365 * 24 * 60 * 60, 60, true);
 test(365.2422 * 24 * 60 * 60, 60, false);
 
 function test(duration, dt, print = false) {
