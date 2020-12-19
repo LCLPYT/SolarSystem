@@ -54,7 +54,7 @@ if(focus === sun) vec = new Vector3(sun.radius * 2000 * scale, 0, 0);
 camera.position.subVectors(focus.mesh.position, vec);
 camera.lookAt(focus.mesh.position);*/
 
-camera.position.set(1000000, 1000000, 1000000);
+camera.position.set(0, 0, 1000000);
 camera.lookAt(sun.mesh.position);
 
 let lastAnimate: number = undefined;
