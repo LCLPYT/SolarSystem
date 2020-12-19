@@ -1,6 +1,8 @@
 import './index.html';
 import './style.css';
 import '../resource/favicon.png';
+import '../resource/images/universe.jpg';
+
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { bodies, sun } from './ts/Bodies';
@@ -52,6 +54,22 @@ bodies.forEach(body => {
 
 camera.position.set(80000, 160000, 320000);
 camera.lookAt(sun.mesh.position);
+
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin('anonymous');
+console.log("loading...");
+loader.load('resource/images/universe.jpg', texture => {
+    console.log("loaded");
+    console.log(texture);
+    const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+    rt.fromEquirectangularTexture(renderer, texture);
+    scene.background = rt;
+}, pe => {
+    console.log("progress");
+}, error => {
+    console.log("error");
+    console.log(error);
+});
 
 let lastAnimate: number = undefined;
 tickLogic();
