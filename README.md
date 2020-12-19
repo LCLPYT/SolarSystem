@@ -12,3 +12,8 @@ After installing the dependencies, webpack can be invoked to build the project:<
 `npm run build` or `npx webpack`<br>
 <br>
 The useable distribution can be found under `./dist` with `index.html` as entry point.
+
+## Developing
+You can start the webpack dev server by using:<br>
+`npm start`<br>
+This automatically open your web browser.
