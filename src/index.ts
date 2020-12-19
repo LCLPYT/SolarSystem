@@ -74,12 +74,14 @@ function animate(now: number) {
 
     renderer.render(scene, camera);
     cssRenderer.render(scene, camera);
+
+    bodies.forEach(body => body.animation.tick());
 }
 
 async function tickLogic() {
     const dt = 1 / logicTicksPerSecond; // Sekunden
 
-    advanceTime(dt * 60000, 50);
+    advanceTime(dt, 50);
 
     bodies.forEach(body => {
         if (body instanceof OrbitBody) body.feedOrbitPosition(body.mesh.position);

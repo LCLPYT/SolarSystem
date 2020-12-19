@@ -2,8 +2,10 @@ import { bodies } from "./Bodies";
 import { G } from "./Constants";
 import { ZERO } from "./Vector";
 
-export function advanceTime(dt: number, precision: number) {
-    dt /= precision;
+let timeMultiplier = 600000;
+
+export function advanceTime(elapsed: number, precision: number) {
+    let dt = elapsed * timeMultiplier / precision;
     for (let k = 0; k < precision; k++) {
         bodies.forEach(body => body.force = ZERO);
         for (let i = 0; i < bodies.length; i++) {
@@ -19,7 +21,7 @@ export function advanceTime(dt: number, precision: number) {
         bodies.forEach(body => {
             body.acceleration = body.force.divScalar(body.mass);
             body.velocity = body.velocity.add(body.acceleration.multScalar(dt));
-            body.setPosition(body.position.add(body.velocity.multScalar(dt)));
+            body.setPositionSmooth(body.position.add(body.velocity.multScalar(dt)), elapsed * 1000);
         });
     }
 }

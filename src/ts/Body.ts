@@ -1,6 +1,7 @@
-import { Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
+import { Material, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { AU_IN_M, DAY_IN_SECONDS, G } from "./Constants";
+import { LinearAnimation } from "./LinearAnimation";
 import { scale } from "./Values";
 import { Vector } from "./Vector";
 
@@ -25,7 +26,8 @@ export class Body {
     force: Vector;
     /** Die Beschleunigung, mit der der Körper aufgrund der Gravitationskraft beschleunigt wird. In m/s^2 */
     acceleration: Vector;
-    mesh: Mesh<SphereGeometry, MeshStandardMaterial>;
+    mesh: Mesh<SphereGeometry, Material>;
+    animation: LinearAnimation;
     label: CSS2DObject;
 
     constructor(name: string, color: number, position: Vector, velocity: Vector, mass: number, radius: number) {
@@ -47,6 +49,12 @@ export class Body {
         scene.add(this.mesh);
     }
 
+    protected getMeshMaterial(): Material {
+        return new MeshStandardMaterial({
+            color: this.color
+        });
+    }
+
     protected initMesh() {
         let geometry = new SphereGeometry(
             this.radius * scale,
@@ -54,12 +62,10 @@ export class Body {
             64 // Anzahl der vertikalen Segmente der Kugel
         );
     
-        let material = new MeshStandardMaterial({
-            color: this.color
-        });
-    
-        this.mesh = new Mesh(geometry, material);
+        this.mesh = new Mesh(geometry, this.getMeshMaterial());
         this.updatePosition();
+
+        this.animation = new LinearAnimation(this.mesh);
     }
 
     protected initLabel() {
@@ -75,13 +81,21 @@ export class Body {
     }
 
     protected updatePosition() {
-        let scaled = this.position.multScalar(scale);
-        this.mesh.position.set(scaled.x, scaled.y, scaled.z);
+        this.mesh.position.copy(this.position.toThreeJs());
     }
 
     setPosition(position: Vector) {
         this.position = position;
         this.updatePosition();
+    }
+
+    /**
+     * @param position The new position.
+     * @param dt The smooth animation duration. In ms.
+     */
+    setPositionSmooth(position: Vector, dt: number) {
+        this.position = position;
+        this.animation.make(position.toThreeJs(), dt);
     }
 
 }

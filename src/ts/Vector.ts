@@ -1,4 +1,5 @@
 import { Vector3 } from "three";
+import { scale } from "./Values";
 
 export class Vector {
 
@@ -50,6 +51,10 @@ export class Vector {
 
     normalize(): Vector {
         return this.divScalar(this.length());
+    }
+
+    toThreeJs(): Vector3 {
+        return new Vector3(this.x * scale, this.y * scale, this.z * scale);
     }
 
 }

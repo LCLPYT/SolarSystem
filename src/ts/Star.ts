@@ -1,4 +1,4 @@
-import { Mesh, MeshStandardMaterial, PointLight, Scene, SphereGeometry } from "three";
+import { Material, Mesh, MeshStandardMaterial, PointLight, Scene, SphereGeometry } from "three";
 import { Body } from "./Body";
 import { scale } from "./Values";
 
@@ -11,20 +11,11 @@ export class Star extends Body {
         this.initLightSource();
     }
 
-    protected initMesh() {
-        let geometry = new SphereGeometry(
-            this.radius * scale,
-            64, // Anzahl der horizontalen Segmente der Kugel
-            64 // Anzahl der vertikalen Segmente der Kugel
-        );
-    
-        let material = new MeshStandardMaterial({
+    protected getMeshMaterial(): Material {
+        return new MeshStandardMaterial({
             color: this.color,
             emissive: this.color
         });
-    
-        this.mesh = new Mesh(geometry, material);
-        this.updatePosition();
     }
 
     protected initLightSource() {
