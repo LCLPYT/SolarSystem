@@ -2,11 +2,13 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { bodies, sun } from './ts/Bodies';
+import { bodies, earth, sun } from './ts/Bodies';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitBody, ORBIT_MAX_VERTICES } from './ts/OrbitBody';
 import { advanceTime } from './ts/Physics';
+
+const logicTicksPerSecond = 30;
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -57,6 +59,7 @@ camera.position.set(1000000, 1000000, 1000000);
 camera.lookAt(sun.mesh.position);
 
 let lastAnimate: number = undefined;
+tickLogic();
 requestAnimationFrame(animate);
 
 function animate(now: number) {
@@ -73,22 +76,16 @@ function animate(now: number) {
 
     renderer.render(scene, camera);
     cssRenderer.render(scene, camera);
+}
+
+async function tickLogic() {
+    const dt = 1 / logicTicksPerSecond; // Sekunden
 
     advanceTime(dt * 600000, 10);
 
     bodies.forEach(body => {
-        if (body instanceof OrbitBody) {
-            const geometry = <BufferGeometry> body.orbit.geometry;
-            const positionAttribute = <BufferAttribute> geometry.attributes.position;
-            let i = body.orbitVertexNumber++ % ORBIT_MAX_VERTICES;
-            positionAttribute.setXYZ(i, body.mesh.position.x, body.mesh.position.y, body.mesh.position.z);
-            if (body.shownVertices < ORBIT_MAX_VERTICES) geometry.setDrawRange(0, ++body.shownVertices);
-            else {
-                geometry.clearGroups();
-                geometry.addGroup(0, i + 1);
-                geometry.addGroup(i + 1, ORBIT_MAX_VERTICES - i - 1);
-            }
-            positionAttribute.needsUpdate = true;
-        }
+        if (body instanceof OrbitBody) body.feedOrbitPosition(body.mesh.position);
     });
+
+    setTimeout(tickLogic, dt * 1000);
 }
