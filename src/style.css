@@ -1,7 +1,7 @@
 body {
     margin: 0;
     overflow: hidden;
-    font-family: sans-serif;
+    font-family: monospace;
 }
 canvas {
     display: block;
@@ -9,5 +9,5 @@ canvas {
 .label {
     color: white;
     padding: 2px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.4);
 }

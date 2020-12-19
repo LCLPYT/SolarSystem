@@ -54,7 +54,7 @@ export class Vector {
     }
 
     toThreeJs(): Vector3 {
-        return new Vector3(this.x * scale, this.y * scale, this.z * scale);
+        return new Vector3(this.x * scale, this.z * scale, this.y * scale);
     }
 
 }

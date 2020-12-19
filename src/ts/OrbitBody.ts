@@ -10,6 +10,7 @@ export class OrbitBody extends Body {
     orbit: Line<BufferGeometry, LineBasicMaterial>[] = [];
     vertexIndex: number = 0;
     secondOrbitUsed: boolean = false;
+    orbitCounter: number = 0;
     /** Die zukünftige Position des Planeten an der neuesten Stelle der Umlaufbahn, relativ zur Sonne. In m */
     orbitLatestPosition: Vector;
     /** Die zukünftige Geschwindigkeit des Planeten an der neuesten Stelle der Umlaufbahn. In m/s */
@@ -41,6 +42,9 @@ export class OrbitBody extends Body {
     }
     
     feedOrbitPosition(position: Vector3) {
+        if(this.orbitCounter-- > 0) return;
+        this.orbitCounter = 5;
+
         let i = this.vertexIndex++;
         if(this.vertexIndex >= ORBIT_MAX_VERTICES * 2) this.vertexIndex = 0;
 
