@@ -1,36 +1,46 @@
+import { Vector3 } from "three";
+
 export class Vector {
 
-    constructor(x, y, z) {
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+
+    constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    length() {
-        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    length(): number {
+        return Math.sqrt(this.lengthSquared());
     }
 
-    multScalar(s) {
+    lengthSquared(): number {
+        return this.dot(this);
+    }
+
+    multScalar(s: number): Vector {
         return new Vector(this.x * s, this.y * s, this.z * s);
     }
 
-    divScalar(s) {
+    divScalar(s: number): Vector {
         return this.multScalar(1 / s);
     }
 
-    add(vec) {
+    add(vec: Vector): Vector {
         return new Vector(this.x + vec.x, this.y + vec.y, this.z + vec.z);
     }
 
-    sub(vec) {
+    sub(vec: Vector): Vector {
         return new Vector(this.x - vec.x, this.y - vec.y, this.z - vec.z);
     }
 
-    dot(vec) {
+    dot(vec: Vector): number {
         return this.x * vec.x + this.y * vec.y + this.z * vec.z;
     }
 
-    cross(vec) {
+    cross(vec: Vector): Vector {
         return new Vector(
             this.y * vec.z - this.z * vec.y, 
             this.z * vec.x - this.x * vec.z,
@@ -38,8 +48,10 @@ export class Vector {
             );
     }
 
-    normalize() {
+    normalize(): Vector {
         return this.divScalar(this.length());
     }
 
 }
+
+export const ZERO = new Vector(0, 0, 0);
