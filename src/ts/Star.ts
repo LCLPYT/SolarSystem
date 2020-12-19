@@ -11,14 +11,9 @@ export class Star extends Body {
         this.initLightSource();
     }
 
-    addToScene(scene: Scene) {
-        super.addToScene(scene);
-        scene.add(this.lightSource);
-    }
-
     protected initMesh() {
         let geometry = new SphereGeometry(
-            this.radius * 1E+3 * scale,
+            this.radius * scale,
             64, // Anzahl der horizontalen Segmente der Kugel
             64 // Anzahl der vertikalen Segmente der Kugel
         );

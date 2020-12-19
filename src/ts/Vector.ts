@@ -53,3 +53,5 @@ export class Vector {
     }
 
 }
+
+export const ZERO = new Vector(0, 0, 0);

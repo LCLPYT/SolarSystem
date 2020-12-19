@@ -1,18 +1,5 @@
-import { CircleGeometry, LineBasicMaterial, LineLoop, Scene } from "three";
-import { Body, getOrbitLineLoop } from "./Body";
+import { OrbitBody } from "./OrbitBody";
 
-export class Planet extends Body {
+export class Planet extends OrbitBody {
 
-    orbit: LineLoop<CircleGeometry, LineBasicMaterial>;
-
-    init(): void {
-        super.init();
-        this.orbit = getOrbitLineLoop(this);
-    }
-
-    addToScene(scene: Scene) {
-        super.addToScene(scene);
-        scene.add(this.orbit);
-    }
-    
 }

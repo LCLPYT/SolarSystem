@@ -2,10 +2,11 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { bodies, earth, jupiter, mars, mercury, neptune, pluto, saturn, sun, uranus, venus } from './ts/Bodies';
-import { scale } from './ts/Values';
-import { Vector3 } from 'three';
-import { tick } from './ts/Ticker';
+import { bodies, sun } from './ts/Bodies';
+import { BufferAttribute, BufferGeometry } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitBody, ORBIT_MAX_VERTICES } from './ts/OrbitBody';
+import { advanceTime } from './ts/Physics';
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -33,6 +34,9 @@ cssRenderer.domElement.style.position = 'absolute';
 cssRenderer.domElement.style.top = '0px';
 cssRenderer.domElement.style.pointerEvents = 'none';
 document.body.appendChild(cssRenderer.domElement);
+
+let controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
 let ambientLight = new THREE.AmbientLight(0xffffff, 0.01);
 scene.add(ambientLight);
@@ -64,8 +68,27 @@ function animate(now: number) {
         return;
     }
 
-    tick(now);
+    const dt = (now - lastAnimate) / 1000;
+    lastAnimate = now;
 
     renderer.render(scene, camera);
     cssRenderer.render(scene, camera);
+
+    advanceTime(dt * 600000, 10);
+
+    bodies.forEach(body => {
+        if (body instanceof OrbitBody) {
+            const geometry = <BufferGeometry> body.orbit.geometry;
+            const positionAttribute = <BufferAttribute> geometry.attributes.position;
+            let i = body.orbitVertexNumber++ % ORBIT_MAX_VERTICES;
+            positionAttribute.setXYZ(i, body.mesh.position.x, body.mesh.position.y, body.mesh.position.z);
+            if (body.shownVertices < ORBIT_MAX_VERTICES) geometry.setDrawRange(0, ++body.shownVertices);
+            else {
+                geometry.clearGroups();
+                geometry.addGroup(0, i + 1);
+                geometry.addGroup(i + 1, ORBIT_MAX_VERTICES - i - 1);
+            }
+            positionAttribute.needsUpdate = true;
+        }
+    });
 }

@@ -1,4 +1,4 @@
-import { CircleGeometry, LineBasicMaterial, LineLoop, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
+import { Mesh, MeshStandardMaterial, Scene, SphereGeometry } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { AU_IN_M, DAY_IN_SECONDS, G } from "./Constants";
 import { scale } from "./Values";
@@ -21,6 +21,10 @@ export class Body {
     position: Vector;
     /** Die Geschwindigkeit des Körpers. In m/s */
     velocity: Vector;
+    /** Die Gravitationskraft, die auf den Köroer wirkt. In N */
+    force: Vector;
+    /** Die Beschleunigung, mit der der Körper aufgrund der Gravitationskraft beschleunigt wird. In m/s^2 */
+    acceleration: Vector;
     mesh: Mesh<SphereGeometry, MeshStandardMaterial>;
     label: CSS2DObject;
 
@@ -80,25 +84,4 @@ export class Body {
         this.updatePosition();
     }
 
-}
-
-/**
- * Erstellt einen Kreis, der die Umlaufbahn simuliert.
- * TODO realistische Daten anwenden! -> Eckpunkte aus Daten berechnen.
- */
-export function getOrbitLineLoop(body: Body): LineLoop<CircleGeometry, LineBasicMaterial> {
-    let circleGeometry = new CircleGeometry(
-        body.position.length() * scale,
-        128 // Anzahl der Kreissegmente
-    );
-    circleGeometry.vertices.shift(); // Den ersten Eckpunkt entfernen, da es keine Linie zum Zentrum geben soll.
-
-    let circleMaterial = new LineBasicMaterial({
-        color: body.color
-    });
-
-    let orbit = new LineLoop(circleGeometry, circleMaterial); // LineLoop, damit der Kreis geschlossen ist.
-    orbit.rotation.x = Math.PI / 2;
-
-    return orbit;
 }
