@@ -2,13 +2,12 @@ import './index.html';
 import './style.css';
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { bodies, earth, sun } from './ts/Bodies';
-import { BufferAttribute, BufferGeometry } from 'three';
+import { bodies, sun } from './ts/Bodies';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OrbitBody, ORBIT_MAX_VERTICES } from './ts/OrbitBody';
+import { OrbitBody } from './ts/OrbitBody';
 import { advanceTime } from './ts/Physics';
 
-const logicTicksPerSecond = 30;
+const logicTicksPerSecond = 20;
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -71,7 +70,6 @@ function animate(now: number) {
         return;
     }
 
-    const dt = (now - lastAnimate) / 1000;
     lastAnimate = now;
 
     renderer.render(scene, camera);
@@ -81,7 +79,7 @@ function animate(now: number) {
 async function tickLogic() {
     const dt = 1 / logicTicksPerSecond; // Sekunden
 
-    advanceTime(dt * 600000, 10);
+    advanceTime(dt * 60000, 50);
 
     bodies.forEach(body => {
         if (body instanceof OrbitBody) body.feedOrbitPosition(body.mesh.position);
