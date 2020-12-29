@@ -16,8 +16,6 @@ export class Body {
     readonly mass: number;
     /** Der Radius des Körpers. In m */
     readonly radius: number;
-    /** Die Masse des Körpers mal der Gravitationskonstante. In m^3*s^-2 */
-    readonly g_times_m: number;
     /** Die Position des Körpers, relativ zur Sonne. In m */
     position: Vector;
     /** Die Geschwindigkeit des Körpers. In m/s */
@@ -37,7 +35,6 @@ export class Body {
         this.velocity = velocity.multScalar(AU_IN_M / DAY_IN_SECONDS);
         this.mass = mass;
         this.radius = radius * 1000;
-        this.g_times_m = G * this.mass;
     }
 
     init() {
@@ -87,6 +84,7 @@ export class Body {
     setPosition(position: Vector) {
         this.position = position;
         this.updatePosition();
+        this.animation.stop();
     }
 
     /**

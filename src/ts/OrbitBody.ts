@@ -1,6 +1,5 @@
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Scene, Vector3 } from "three";
 import { Body } from "./Body";
-import { Vector } from "./Vector";
 
 export const ORBIT_MAX_VERTICES = 1250;
 const ORBIT_MAX_IDX = ORBIT_MAX_VERTICES - 1;
@@ -10,10 +9,6 @@ export class OrbitBody extends Body {
     orbit: Line<BufferGeometry, LineBasicMaterial>[] = [];
     vertexIndex: number = 0;
     secondOrbitUsed: boolean = false;
-    /** Die zukünftige Position des Planeten an der neuesten Stelle der Umlaufbahn, relativ zur Sonne. In m */
-    orbitLatestPosition: Vector;
-    /** Die zukünftige Geschwindigkeit des Planeten an der neuesten Stelle der Umlaufbahn. In m/s */
-    orbitLatestVelocity: Vector;
     
     init(): void {
         super.init();
