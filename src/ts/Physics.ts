@@ -3,8 +3,8 @@ import { G } from "./Constants";
 import { ZERO as NONE } from "./Vector";
 
 let now = new Date(2020, 8, 1, 0, 0, 0);
-let timeMultiplier = 600000;
-let precision = 50;
+export let timeMultiplier = 600000;
+export let precision = 50;
 
 export function advanceTime(elapsed: number) {
     let dt = elapsed * timeMultiplier / precision;
@@ -33,4 +33,12 @@ export function advanceTime(elapsed: number) {
 export function updateTimestamp() {
     let span = document.getElementById("timestamp");
     span.innerHTML = now.toString();
+}
+
+export function setTimeMultiplier(factor: number) {
+    timeMultiplier = factor;
+}
+
+export function setPrecision(times: number) {
+    precision = times;
 }

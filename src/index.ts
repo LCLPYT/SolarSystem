@@ -8,7 +8,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { bodies, setDwarfPlanetsVisible, setMoonsVisible, sun } from './ts/Bodies';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitBody } from './ts/OrbitBody';
-import { advanceTime, updateTimestamp } from './ts/Physics';
+import { advanceTime, updateTimestamp, timeMultiplier, setTimeMultiplier, precision, setPrecision } from './ts/Physics';
 
 const logicTicksPerSecond = 20;
 
@@ -123,6 +123,14 @@ dwarfCheckbox.onchange = () => setDwarfPlanetsVisible(dwarfCheckbox.checked);
 
 let moonsCheckbox = <HTMLInputElement> document.getElementById("moons");
 moonsCheckbox.onchange = () => setMoonsVisible(moonsCheckbox.checked);
+
+let speedControl = <HTMLInputElement> document.getElementById("speed");
+speedControl.value = timeMultiplier.toString();
+speedControl.onchange = () => setTimeMultiplier(Number(speedControl.value));
+
+let precisionControl = <HTMLInputElement> document.getElementById("precision");
+precisionControl.value = precision.toString();
+precisionControl.onchange = () => setPrecision(Number(precisionControl.value));
 
 tickLogic();
 requestAnimationFrame(animate);
