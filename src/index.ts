@@ -5,7 +5,7 @@ import '../resource/images/universe.jpg';
 
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { bodies, sun } from './ts/Bodies';
+import { bodies, setDwarfPlanetsVisible, setMoonsVisible, sun } from './ts/Bodies';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitBody } from './ts/OrbitBody';
 import { advanceTime, updateTimestamp } from './ts/Physics';
@@ -56,7 +56,7 @@ camera.position.set(80000, 160000, 320000);
 camera.lookAt(sun.mesh.position);
 
 new THREE.TextureLoader().load('resource/images/universe.jpg', texture => {
-    const rt = new THREE.WebGLCubeRenderTarget(512);
+    const rt = new THREE.WebGLCubeRenderTarget(2048);
     scene.background = rt.fromEquirectangularTexture(renderer, texture);
 });
 
@@ -76,8 +76,6 @@ function animate(now: number) {
     }
 
     lastAnimate = now;
-
-    // const dt = (now - lastAnimate) / 1000;
 
     controls.update();
 
@@ -119,6 +117,12 @@ window.onresize = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
 };
+
+let dwarfCheckbox = <HTMLInputElement> document.getElementById("dwarf");
+dwarfCheckbox.onchange = () => setDwarfPlanetsVisible(dwarfCheckbox.checked);
+
+let moonsCheckbox = <HTMLInputElement> document.getElementById("moons");
+moonsCheckbox.onchange = () => setMoonsVisible(moonsCheckbox.checked);
 
 tickLogic();
 requestAnimationFrame(animate);

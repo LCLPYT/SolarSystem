@@ -1,4 +1,6 @@
+import { DwarfPlanet } from "./DwarfPlanet";
 import { Moon } from "./Moon";
+import { OrbitBody } from "./OrbitBody";
 import { Planet } from "./Planet";
 import { Star } from "./Star";
 import { Vector } from "./Vector";
@@ -83,7 +85,7 @@ const neptune = new Planet(
     102.4126E+24,
     24624
 );
-const pluto = new Planet(
+const pluto = new DwarfPlanet(
     "Pluto",
     0x736750,
     new Vector( 1.370090018265341E+01, -3.123258476248061E+01, -6.201482188620383E-01),
@@ -91,7 +93,75 @@ const pluto = new Planet(
     1.307E+22,
     1188.3
 );
+const ceres = new DwarfPlanet(
+    "Ceres",
+    0x948a7c,
+    new Vector( 2.680885061401862E+00, -1.192988824337675E+00, -5.315913965989985E-01),
+    new Vector( 3.785985380393955E-03,  8.774833604668866E-03, -4.205901768670105E-04),
+    9.3835E+20, // https://ssd.jpl.nasa.gov/sbdb.cgi,
+    469.73 // https://en.wikipedia.org/w/index.php?title=Ceres_(dwarf_planet)&oldid=996957830
+);
+const haumea = new DwarfPlanet(
+    "Haumea",
+    0xb5b0a8,
+    new Vector(-3.955499553935714E+01, -2.010507751073189E+01,  2.370648779630343E+01),
+    new Vector( 1.220241714698539E-03, -1.848386757578234E-03, -2.621740233238884E-05),
+    4.006E+21, // https://en.wikipedia.org/w/index.php?title=Haumea&oldid=997744295
+    780 // https://en.wikipedia.org/w/index.php?title=Haumea&oldid=997744295
+);
+const makemake = new DwarfPlanet(
+    "Makemake",
+    0xccc4ba,
+    new Vector(-4.618465374582813E+01, -4.862291298769840E+00,  2.467909873924672E+01),
+    new Vector( 2.017542463998990E-05, -2.164048162256967E-03, -2.273720935925121E-04),
+    3.1E+21, // https://en.wikipedia.org/w/index.php?title=Makemake&oldid=997773111
+    715 // https://en.wikipedia.org/w/index.php?title=Makemake&oldid=997773111
+);
+const eris = new DwarfPlanet(
+    "Eris",
+    0xa8a49d,
+    new Vector( 8.608021896236275E+01,  3.775590591713487E+01, -1.931396113466387E+01),
+    new Vector(-4.072442087529086E-04,  8.877186755721534E-04,  9.249708763576487E-04),
+    1.6466E+22, // https://en.wikipedia.org/w/index.php?title=Eris_(dwarf_planet)&oldid=997080864
+    1163 // https://en.wikipedia.org/w/index.php?title=Eris_(dwarf_planet)&oldid=997080864
+);
 
-const bodies = [sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune, pluto];
+export function setDwarfPlanetsVisible(visible: boolean) {
+    setVisible(visible, body => body instanceof DwarfPlanet);
+}
 
-export { sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune, pluto, bodies };
+export function setMoonsVisible(visible: boolean) {
+    setVisible(visible, body => body instanceof Moon);
+}
+
+function setVisible(visible: boolean, predicate: (value: Planet | Star | Moon) => boolean) {
+    bodies.forEach(body => {
+        if(predicate(body)) {
+            body.mesh.visible = visible;
+            body.label.visible = visible;
+            if(body instanceof OrbitBody) {
+                body.orbit.forEach(orbit => orbit.visible = visible);
+            }
+        }
+    })
+}
+
+const bodies = [
+    sun, 
+    mercury, 
+    venus, 
+    earth, 
+    moon, 
+    mars, 
+    jupiter, 
+    saturn, 
+    uranus, 
+    neptune, 
+    pluto, 
+    ceres, 
+    haumea, 
+    makemake,
+    eris
+];
+
+export { sun, bodies };
