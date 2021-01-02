@@ -6,6 +6,32 @@
     <link rel="shortcut icon" type="image/png" href="resource/favicon.png">
   </head>
   <body>
+    <div id="menu" class="ui">
+      <div style="margin-left: 20px;">
+        <h1>Sonnensystem - Simulation</h1>
+        <h3>von Lukas Leicher</h3>
+        <div style="margin-top: 60px; display: inline-block; max-width: 200px; text-align: left;">
+          Momentaner Zeitpunkt:<br>
+          <span id="timestamp" style="color:yellow"></span>
+        </div>
+      </div>
+    </div>
+    <div style="right: 20px" class="ui">
+      <h2>Einstellungen</h2>
+      <input type="checkbox" id="dwarf" checked>
+      <label for="dwarf">Zwergplaneten</label>
+      <br>
+      <input type="checkbox" id="moons" checked>
+      <label for="moons">Monde</label>
+      <br>
+      <br>
+      Beschleunigungsfaktor<br>
+      x&nbsp;<input type="number" min="0" max="600000000" id="speed">
+      <br>
+      <br>
+      Präzision<br>
+      x&nbsp;<input type="number" min="1" max="5000" id="precision">
+    </div>
     <script src="bundle.js"></script>
   </body>
 </html>
