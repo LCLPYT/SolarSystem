@@ -90,7 +90,7 @@ async function tickLogic() {
 
     const dt = 1 / logicTicksPerSecond; // Sekunden
 
-    advanceTime(dt, 50);
+    advanceTime(dt);
 
     bodies.forEach(body => {
         if (body instanceof OrbitBody) body.feedOrbitPosition(body.mesh.position);

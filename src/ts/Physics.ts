@@ -4,8 +4,9 @@ import { ZERO as NONE } from "./Vector";
 
 let now = new Date(2020, 8, 1, 0, 0, 0);
 let timeMultiplier = 600000;
+let precision = 50;
 
-export function advanceTime(elapsed: number, precision: number) {
+export function advanceTime(elapsed: number) {
     let dt = elapsed * timeMultiplier / precision;
     for (let k = 0; k < precision; k++) {
         bodies.forEach(body => body.force = NONE);
