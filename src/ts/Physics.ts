@@ -2,6 +2,7 @@ import { bodies } from "./Bodies";
 import { G } from "./Constants";
 import { ZERO as NONE } from "./Vector";
 
+let now = new Date(2020, 8, 1, 0, 0, 0);
 let timeMultiplier = 600000;
 
 export function advanceTime(elapsed: number, precision: number) {
@@ -24,4 +25,11 @@ export function advanceTime(elapsed: number, precision: number) {
             body.setPositionSmooth(body.position.add(body.velocity.multScalar(dt)), elapsed * 1000);
         });
     }
+    now.setTime(now.getTime() + elapsed * timeMultiplier * 1000);
+    updateTimestamp();
+}
+
+export function updateTimestamp() {
+    let span = document.getElementById("timestamp");
+    span.innerHTML = now.toString();
 }

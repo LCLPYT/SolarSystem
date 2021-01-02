@@ -1,5 +1,5 @@
-import { OrbitBody } from "./OrbitBody";
+import { Body } from "./Body";
 
-export class Moon extends OrbitBody {
+export class Moon extends Body {
 
 }

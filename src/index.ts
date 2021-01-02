@@ -8,7 +8,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { bodies, sun } from './ts/Bodies';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitBody } from './ts/OrbitBody';
-import { advanceTime } from './ts/Physics';
+import { advanceTime, updateTimestamp } from './ts/Physics';
 
 const logicTicksPerSecond = 20;
 
@@ -60,11 +60,14 @@ new THREE.TextureLoader().load('resource/images/universe.jpg', texture => {
     scene.background = rt.fromEquirectangularTexture(renderer, texture);
 });
 
+updateTimestamp();
+
 let lastAnimate: number = undefined;
-tickLogic();
-requestAnimationFrame(animate);
+let paused = false;
 
 function animate(now: number) {
+    if (paused) return;
+
     requestAnimationFrame(animate);
 
     if (lastAnimate === undefined) {
@@ -85,6 +88,8 @@ function animate(now: number) {
 }
 
 async function tickLogic() {
+    if (paused) return;
+
     const dt = 1 / logicTicksPerSecond; // Sekunden
 
     advanceTime(dt, 50);
@@ -95,3 +100,25 @@ async function tickLogic() {
 
     setTimeout(tickLogic, dt * 1000);
 }
+
+window.onblur = () => {
+    paused = true;
+    lastAnimate = undefined;
+};
+
+window.onfocus = () => {
+    paused = false;
+    tickLogic();
+    requestAnimationFrame(animate); 
+};
+
+window.onresize = () => {
+    // https://stackoverflow.com/questions/20290402/three-js-resizing-canvas
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    cssRenderer.setSize(window.innerWidth, window.innerHeight);
+};
+
+tickLogic();
+requestAnimationFrame(animate);

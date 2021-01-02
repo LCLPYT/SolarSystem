@@ -1,3 +1,4 @@
+import { Moon } from "./Moon";
 import { Planet } from "./Planet";
 import { Star } from "./Star";
 import { Vector } from "./Vector";
@@ -33,6 +34,14 @@ const earth = new Planet(
     new Vector( 5.953675405988818E-03,  1.596352471711937E-02, -4.253361160181482E-07),
     5.97219E+24,
     6378.137
+);
+const moon = new Moon(
+    "Mond",
+    0xd3d7de,
+    new Vector( 9.426732587300775E-01, -3.674274985472571E-01, -1.808644230580496E-04),
+    new Vector( 6.301406059689874E-03,  1.642253737496254E-02, -2.822062559898485E-05),
+    7.349E+22,
+    1737.53
 );
 const mars = new Planet(
     "Mars",
@@ -83,6 +92,6 @@ const pluto = new Planet(
     1188.3
 );
 
-const bodies = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
+const bodies = [sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune, pluto];
 
-export { sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, bodies };
+export { sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune, pluto, bodies };
