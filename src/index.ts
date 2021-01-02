@@ -55,20 +55,9 @@ bodies.forEach(body => {
 camera.position.set(80000, 160000, 320000);
 camera.lookAt(sun.mesh.position);
 
-const loader = new THREE.TextureLoader();
-loader.setCrossOrigin('anonymous');
-console.log("loading...");
-loader.load('resource/images/universe.jpg', texture => {
-    console.log("loaded");
-    console.log(texture);
-    const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-    rt.fromEquirectangularTexture(renderer, texture);
-    scene.background = rt;
-}, pe => {
-    console.log("progress");
-}, error => {
-    console.log("error");
-    console.log(error);
+new THREE.TextureLoader().load('resource/images/universe.jpg', texture => {
+    const rt = new THREE.WebGLCubeRenderTarget(512);
+    scene.background = rt.fromEquirectangularTexture(renderer, texture);
 });
 
 let lastAnimate: number = undefined;
