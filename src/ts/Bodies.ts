@@ -1,3 +1,8 @@
+/*
+Dieses Modul definiert alle Himmelskörper.
+Die Daten sind dabei von JPL Horizons entnommen, es sei denn anders angegeben.
+*/
+
 import { DwarfPlanet } from "./DwarfPlanet";
 import { Moon } from "./Moon";
 import { OrbitBody } from "./OrbitBody";
@@ -5,13 +10,14 @@ import { Planet } from "./Planet";
 import { Star } from "./Star";
 import { Vector } from "./Vector";
 
+/* Himmelskörper definieren */
 const sun = new Star(
-    "Sonne",
-    0xfdb813,
-    new Vector(0, 0, 0), 
-    new Vector(0, 0, 0), 
-    1988500E+24,
-    695700
+    "Sonne",             // Name
+    0xfdb813,            // Farbe
+    new Vector(0, 0, 0), // Position;
+    new Vector(0, 0, 0), // Geschwindigkeit;
+    1988500E+24,         // Masse in kg;
+    695700               // Radius in km;
 );
 const mercury = new Planet(
     "Merkur",
@@ -126,26 +132,41 @@ const eris = new DwarfPlanet(
     1163 // https://en.wikipedia.org/w/index.php?title=Eris_(dwarf_planet)&oldid=997080864
 );
 
+/**
+ * Verändert die Sichtbarkeit aller Zwergplaneten.
+ * @param visible Ob die Zwergplaneten sichtbar sein sollen.
+ */
 export function setDwarfPlanetsVisible(visible: boolean) {
     setVisible(visible, body => body instanceof DwarfPlanet);
 }
 
+/**
+ * Verändert die Sichtbarkeit aller Monde.
+ * @param visible Ob die Monde sichtbar sein sollen.
+ */
 export function setMoonsVisible(visible: boolean) {
     setVisible(visible, body => body instanceof Moon);
 }
 
+/**
+ * Verändert die Sichtbarkeit aller Himmelskörper, die einer Bedingung entsprechen.
+ * @param visible Ob die Himmelskörper sichtbar sein sollen.
+ * @param predicate Die Bedingung, der die Himmelskörper entsprechen müssen.
+ */
 function setVisible(visible: boolean, predicate: (value: Planet | Star | Moon) => boolean) {
     bodies.forEach(body => {
         if(predicate(body)) {
-            body.mesh.visible = visible;
-            body.label.visible = visible;
-            if(body instanceof OrbitBody) {
+            body.mesh.visible = visible; // Mesh Sichtbarkeit
+            body.label.visible = visible; // Namensschild Sichtbarkeit
+
+            // Sichtbarkeit der Planetenspuren, falls vorhanden
+            if(body instanceof OrbitBody) 
                 body.orbit.forEach(orbit => orbit.visible = visible);
-            }
         }
-    })
+    });
 }
 
+/** Ein Feld mit allen Himmelskörpern, die betrachtet werden sollen. */
 const bodies = [
     sun, 
     mercury, 
