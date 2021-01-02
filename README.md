@@ -1,21 +1,20 @@
 # SolarSystem
-A model of the solar system.
+Ein Modell des Sonnensystems.
+Dies der Quelltext der BLL von Lukas Leicher.
 
-## Live preview
-https://lclpyt.github.io/SolarSystem/
-
-## Building
-First, you need to install the project dependencies.<br>
-To do so, type `npm install`.<br>
+## Projekt kompilieren
+Um das Projekt kompilieren zu können, muss zuerst Node.js installiert werden.
+Dieser Quelltext wurde mit `Node.js v12.15.0` getestet (`npm, npx v6.14.9`).<br>
 <br>
-After installing the dependencies, webpack can be invoked to build the project:<br>
-`npm run build`<br>
+Als erstes müssen die Abhängigkeiten installiert werden.<br>
+Um dies zu tun muss zuerst das Kommando
+`npm install`
+ausgeführt werden.<br>
 <br>
-The useable distribution can be found under `./dist` with `index.html` as entry point.
-
-## Developing
-You can start the webpack dev server by using:<br>
-`npm start`<br>
-This automatically open your web browser.<br>
+Nachdem dies geschehen ist, muss das Projekt mit 
+`npm run build` 
+gebaut werden.<br>
 <br>
-You may also use `npm run dev` to build a developer version of the project.
+Die fertige Distribution befindet sich danach im `./dist` Verzeichnis, wobei
+`index.html` die Startdatei ist, welche man einfach in einem WebGL kompatiblen Webbrowser öffnen können solle. Alternativ steht auch eine fertige Distribution
+des Projektes in dieser Abgabe bereit.
