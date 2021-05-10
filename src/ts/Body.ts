@@ -24,7 +24,7 @@ export class Body {
     force: Vector;
     /** Die Beschleunigung, mit der der Körper aufgrund der Gravitationskraft beschleunigt wird. In m/s^2 */
     acceleration: Vector;
-    mesh: Mesh<SphereGeometry, Material>;
+    mesh: Mesh;
     animation: LinearAnimation;
     label: CSS2DObject;
 

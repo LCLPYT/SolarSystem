@@ -6,7 +6,7 @@ const ORBIT_MAX_IDX = ORBIT_MAX_VERTICES - 1;
 
 export class OrbitBody extends Body {
     
-    orbit: Line<BufferGeometry, LineBasicMaterial>[] = [];
+    orbit: Line[] = [];
     vertexIndex: number = 0;
     secondOrbitUsed: boolean = false;
     
